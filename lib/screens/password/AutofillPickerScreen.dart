@@ -200,12 +200,17 @@ class _AutofillPickerScreenState extends State<AutofillPickerScreen> {
                               ],
                             ),
                           ),
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
                               // Logic to save the credential is not yet implemented in repo
                               ErrorSnackBar.showInfo(context,
                                   'Funcionalidad de guardado próximamente');
                             },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            ),
                             child: Text('Save'.i18n),
                           )
                         ],
@@ -361,10 +366,14 @@ class _AutofillPickerScreenState extends State<AutofillPickerScreen> {
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: TextButton(
+              child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'.i18n,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.withValues(alpha: 0.8),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Cancel'.i18n),
               ),
             ),
             const SizedBox(height: 16),

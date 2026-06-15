@@ -164,7 +164,7 @@ class _PasswordGeneratorSheetState extends State<_PasswordGeneratorSheet> {
                             ),
                             onPressed: hasPassword ? _generate : null,
                             tooltip: 'Regenerate'.i18n,
-                            constraints: const BoxConstraints(),
+                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                           ),
                           IconButton(
@@ -190,7 +190,7 @@ class _PasswordGeneratorSheetState extends State<_PasswordGeneratorSheet> {
                                   }
                                 : null,
                             tooltip: 'Copy'.i18n,
-                            constraints: const BoxConstraints(),
+                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                           ),
                         ],

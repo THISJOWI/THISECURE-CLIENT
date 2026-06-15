@@ -1,6 +1,4 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
 import '../../data/repository/passwordsRepository.dart';
 import 'package:thisjowi/components/error_bar.dart';
@@ -23,7 +21,6 @@ class EditPasswordScreen extends StatefulWidget {
 }
 
 class _EditPasswordScreenState extends State<EditPasswordScreen> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
@@ -138,69 +135,113 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: LiquidGlass.wrap(Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        widget.passwordEntry == null ? 'Add Password'.i18n : 'Edit Password'.i18n,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close,
-                          color: Theme.of(context).colorScheme.onSurface),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                controller: _titleController,
-                label: 'Title'.i18n,
-                icon: Icons.title,
-                nextFocusNode: _usernameFocusNode,
-                errorText: _titleError,
-                onChanged: (_) { if (_titleError != null) setState(() => _titleError = null); },
+    return LiquidGlass.wrap(
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            child: Text(
+              widget.passwordEntry == null ? 'Add Password'.i18n : 'Edit Password'.i18n,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
               ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _usernameController,
-                label: 'Username'.i18n,
-                icon: Icons.person,
-                focusNode: _usernameFocusNode,
-                nextFocusNode: _passwordFocusNode,
-                errorText: _usernameError,
-                onChanged: (_) { if (_usernameError != null) setState(() => _usernameError = null); },
-              ),
-              const SizedBox(height: 16),
-              _buildPasswordField(),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _websiteController,
-                label: 'Website'.i18n,
-                icon: Icons.link,
-                focusNode: _websiteFocusNode,
-                isLast: true,
-                errorText: _websiteError,
-                onChanged: (_) { if (_websiteError != null) setState(() => _websiteError = null); },
-              ),
-              const SizedBox(height: 40),
-              _buildSaveButton(),
-            ],
             ),
-          ), context, padding: const EdgeInsets.all(16)),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTextField(
+                    controller: _titleController,
+                    label: 'Title'.i18n,
+                    icon: Icons.title,
+                    nextFocusNode: _usernameFocusNode,
+                    errorText: _titleError,
+                    onChanged: (_) { if (_titleError != null) setState(() => _titleError = null); },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _usernameController,
+                    label: 'Username'.i18n,
+                    icon: Icons.person,
+                    focusNode: _usernameFocusNode,
+                    nextFocusNode: _passwordFocusNode,
+                    errorText: _usernameError,
+                    onChanged: (_) { if (_usernameError != null) setState(() => _usernameError = null); },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildPasswordField(),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _websiteController,
+                    label: 'Website'.i18n,
+                    icon: Icons.link,
+                    focusNode: _websiteFocusNode,
+                    isLast: true,
+                    errorText: _websiteError,
+                    onChanged: (_) { if (_websiteError != null) setState(() => _websiteError = null); },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red.withValues(alpha: 0.8),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text('Cancel'.i18n),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  onPressed: _isSaving ? null : _save,
+                  child: _isSaving
+                    ? SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(
+                        widget.passwordEntry == null ? 'Add'.i18n : 'Save'.i18n,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      context,
+      borderRadius: 16,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.3),
+          blurRadius: 20,
+          spreadRadius: 2,
         ),
+      ],
     );
   }
 
@@ -219,48 +260,62 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: hasError 
-                ? Colors.red.withValues(alpha: 0.08) 
-                : Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: hasError 
-                  ? Colors.red.withValues(alpha: 0.6) 
-                  : Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.3),
-              width: hasError ? 1.5 : 1,
-            ),
+        TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontSize: 16,
           ),
-          child: TextFormField(
-            controller: controller,
-            focusNode: focusNode,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
-            textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
-            onFieldSubmitted: (_) {
-              if (isLast) {
-                if (!_isSaving) _save();
-              } else {
-                nextFocusNode?.requestFocus();
-              }
-            },
-            onChanged: onChanged,
-            decoration: InputDecoration(
-              labelText: label,
-              labelStyle: TextStyle(
-                color: hasError ? Colors.red.withValues(alpha: 0.8) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), 
-                fontSize: 14,
-              ),
-              prefixIcon: Icon(
-                icon, 
-                color: hasError ? Colors.red.withValues(alpha: 0.7) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), 
-                size: 20,
-              ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
+          onFieldSubmitted: (_) {
+            if (isLast) {
+              if (!_isSaving) _save();
+            } else {
+              nextFocusNode?.requestFocus();
+            }
+          },
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: TextStyle(
+              color: hasError
+                ? Colors.red.withValues(alpha: 0.8)
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              fontSize: 14,
             ),
-            validator: validator,
+            prefixIcon: Icon(
+              icon,
+              color: hasError
+                ? Colors.red.withValues(alpha: 0.7)
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              size: 20,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: hasError
+                  ? Colors.red.withValues(alpha: 0.6)
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                width: hasError ? 1.5 : 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: hasError
+                  ? Colors.red.withValues(alpha: 0.8)
+                  : Theme.of(context).colorScheme.primary,
+                width: hasError ? 2 : 1,
+              ),
+            ),
+            filled: true,
+            fillColor: hasError
+              ? Colors.red.withValues(alpha: 0.08)
+              : Theme.of(context).scaffoldBackgroundColor,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
+          validator: validator,
         ),
         if (hasError)
           Padding(
@@ -283,81 +338,87 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: hasError 
-                ? Colors.red.withValues(alpha: 0.08) 
-                : Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: hasError 
-                  ? Colors.red.withValues(alpha: 0.6) 
-                  : Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.3), 
-              width: hasError ? 1.5 : 1,
-            ),
+        TextFormField(
+          controller: _passwordController,
+          focusNode: _passwordFocusNode,
+          obscureText: !_showPassword,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontSize: 16,
           ),
-          child: TextFormField(
-            controller: _passwordController,
-            focusNode: _passwordFocusNode,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
-            obscureText: !_showPassword,
-            textInputAction: TextInputAction.next,
-            onFieldSubmitted: (_) => _websiteFocusNode.requestFocus(),
-            onChanged: (_) { if (_passwordError != null) setState(() => _passwordError = null); },
-            decoration: InputDecoration(
-              labelText: 'Password'.i18n,
-              labelStyle: TextStyle(
-                color: hasError ? Colors.red.withValues(alpha: 0.8) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), 
-                fontSize: 14,
-              ),
-              prefixIcon: Icon(
-                Icons.lock, 
-                color: hasError ? Colors.red.withValues(alpha: 0.7) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), 
-                size: 20,
-              ),
-              suffixIcon: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.auto_awesome,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
-                onPressed: () async {
-                  final password = await PasswordGeneratorDialog.show(context);
-                  if (password != null && mounted) {
-                    _passwordController.text = password;
-                  }
-                },
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
-              IconButton(
-                icon: Icon(
-                  _showPassword ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                  size: 20,
+          textInputAction: TextInputAction.next,
+          onFieldSubmitted: (_) => _websiteFocusNode.requestFocus(),
+          onChanged: (_) { if (_passwordError != null) setState(() => _passwordError = null); },
+          decoration: InputDecoration(
+            labelText: 'Password'.i18n,
+            labelStyle: TextStyle(
+              color: hasError
+                ? Colors.red.withValues(alpha: 0.8)
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              fontSize: 14,
+            ),
+            prefixIcon: Icon(
+              Icons.lock,
+              color: hasError
+                ? Colors.red.withValues(alpha: 0.7)
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              size: 20,
+            ),
+            suffixIcon: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.auto_awesome,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    size: 20,
+                  ),
+                  onPressed: () async {
+                    final password = await PasswordGeneratorDialog.show(context);
+                    if (password != null && mounted) {
+                      _passwordController.text = password;
+                    }
+                  },
+                  constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                 ),
-                onPressed: () {
-                  setState(() => _showPassword = !_showPassword);
-                },
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
-              IconButton(
-                icon: Icon(Icons.copy, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: _passwordController.text));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Password copied'.i18n)),
-                  );
-                },
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
-            ],
-          ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                IconButton(
+                  icon: Icon(
+                    _showPassword ? Icons.visibility : Icons.visibility_off,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    setState(() => _showPassword = !_showPassword);
+                  },
+                  constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+              ],
             ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: hasError
+                  ? Colors.red.withValues(alpha: 0.6)
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                width: hasError ? 1.5 : 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: hasError
+                  ? Colors.red.withValues(alpha: 0.8)
+                  : Theme.of(context).colorScheme.primary,
+                width: hasError ? 2 : 1,
+              ),
+            ),
+            filled: true,
+            fillColor: hasError
+              ? Colors.red.withValues(alpha: 0.08)
+              : Theme.of(context).scaffoldBackgroundColor,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
         ),
         if (hasError)
@@ -373,36 +434,6 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _isSaving ? null : _save,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.onSurface,
-          foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          elevation: 2,
-          disabledBackgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-        ),
-        child: _isSaving
-            ? SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                widget.passwordEntry == null ? 'Create Password'.i18n : 'Save Changes'.i18n,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-      ),
     );
   }
 }

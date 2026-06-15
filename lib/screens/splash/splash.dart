@@ -96,7 +96,8 @@ class _SplashScreenState extends State<SplashScreen>
     }
 
     // Check if biometric lock is enabled by user in settings
-    final biometricEnabled = await _biometricService.isBiometricEnabled();
+    final userId = await _authService.getUserId();
+    final biometricEnabled = await _biometricService.isBiometricEnabled(userId: userId);
     final biometricLockEnabled =
         await _biometricService.isBiometricLockEnabled();
     if (!biometricEnabled && !biometricLockEnabled) {

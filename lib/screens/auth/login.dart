@@ -100,8 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _checkBiometricAvailability() async {
     final token = await _tokenManager.getToken();
+    final userId = await _tokenManager.getUserId();
     final canCheck = await _biometricService.canCheckBiometrics();
-    final isEnabled = await _biometricService.isBiometricEnabled();
+    final isEnabled = await _biometricService.isBiometricEnabled(userId: userId);
     final biometricType = await _biometricService.getBiometricTypeName();
 
     if (mounted) {

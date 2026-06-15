@@ -202,7 +202,7 @@ class _InfoRow extends StatelessWidget {
                       icon: const Icon(Icons.content_copy),
                       iconSize: 14,
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
+                      constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

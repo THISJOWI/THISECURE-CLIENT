@@ -120,19 +120,23 @@ class _NotesScreenState extends State<NotesScreen> {
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
             actions: [
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text(
-                  'Cancel'.i18n,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.withValues(alpha: 0.8),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
+                child: Text('Cancel'.i18n),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text(
-                  'Delete'.i18n,
-                  style: const TextStyle(color: Colors.red),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
+                child: Text('Delete'.i18n),
               ),
             ],
           ),
@@ -473,7 +477,7 @@ class _NotesScreenState extends State<NotesScreen> {
               ],
             ),
           ),
-          // Bottom Toolbar
+          // Bottom toolbar
           ClipRRect(
             borderRadius: BorderRadius.circular(0),
             child: BackdropFilter(
@@ -485,32 +489,21 @@ class _NotesScreenState extends State<NotesScreen> {
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: SafeArea(
-              child: Row(
-                children: [
-                  // Botón de opciones o grid (opcional, placeholder para equilibrio)
-                  IconButton(
-                    icon: Icon(Icons.grid_view,
-                        color: Theme.of(context).colorScheme.primary
-                            .withValues(alpha: 0.0)), // Invisible para spacing
-                    onPressed: null,
+                  child: Row(
+                    children: [
+                      Text(
+                        '${_notes.length} ${'Notes'.i18n}',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.edit_square, color: Theme.of(context).colorScheme.primary),
+                        onPressed: _createNote,
+                      ),
+                    ],
                   ),
-                  const Spacer(),
-                  // Contador de notas
-                  Text(
-                    '${_notes.length} ${'Notes'.i18n}',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8), fontSize: 11),
-                  ),
-                  const Spacer(),
-                  // Botón Nueva Nota (Icono lápiz sobre papel)
-                  IconButton(
-                    icon:
-                        Icon(Icons.edit_square, color: Theme.of(context).colorScheme.primary),
-                    onPressed: _createNote,
-                  ),
-                ],
-              ),
-            ),
+                ),
               ),
             ),
           ),

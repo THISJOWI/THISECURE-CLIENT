@@ -44,16 +44,35 @@ class BiometricService {
     }
   }
 
-  /// Check if biometric is enabled by user
-  Future<bool> isBiometricEnabled() async {
+  /// Check if biometric is enabled for a specific user.
+  /// Falls back to the legacy global key for migration.
+  Future<bool> isBiometricEnabled({String? userId}) async {
     final prefs = await SharedPreferences.getInstance();
+    if (userId != null) {
+      final userKey = '${_biometricEnabledKey}_$userId';
+      final userValue = prefs.getBool(userKey);
+      if (userValue != null) return userValue;
+      final globalValue = prefs.getBool(_biometricEnabledKey);
+      if (globalValue == true) {
+        await prefs.setBool(userKey, true);
+        await prefs.remove(_biometricEnabledKey);
+        return true;
+      }
+      return false;
+    }
     return prefs.getBool(_biometricEnabledKey) ?? false;
   }
 
-  /// Enable or disable biometric authentication
-  Future<void> setBiometricEnabled(bool enabled) async {
+  /// Enable or disable biometric authentication for a specific user.
+  /// When [userId] is provided, the old global key is cleared.
+  Future<void> setBiometricEnabled(bool enabled, {String? userId}) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_biometricEnabledKey, enabled);
+    if (userId != null) {
+      await prefs.setBool('${_biometricEnabledKey}_$userId', enabled);
+      await prefs.remove(_biometricEnabledKey);
+    } else {
+      await prefs.setBool(_biometricEnabledKey, enabled);
+    }
   }
 
   /// Authenticate using biometrics

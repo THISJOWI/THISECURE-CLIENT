@@ -76,13 +76,23 @@ class _LogsScreenState extends State<LogsScreen> {
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         actions: [
-          TextButton(
+          ElevatedButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel'.i18n, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.withValues(alpha: 0.8),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: Text('Cancel'.i18n),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Clear'.i18n, style: const TextStyle(color: Colors.red)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: Text('Clear'.i18n),
           ),
         ],
       ),

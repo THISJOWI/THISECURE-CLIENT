@@ -129,14 +129,23 @@ class _PasswordScreenState extends State<PasswordScreen> {
             content: Text('Are you sure you want to delete "${entry.title}"?',
                 style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
             actions: [
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text('Cancel'.i18n,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.withValues(alpha: 0.8),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Cancel'.i18n),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text('Delete'.i18n, style: TextStyle(color: Colors.red)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Delete'.i18n),
               ),
             ],
           ),
@@ -249,7 +258,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                               ErrorSnackBar.showInfo(
                                   context, 'User copied'.i18n);
                             },
-                            constraints: const BoxConstraints(),
+                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                             padding: EdgeInsets.zero,
                           ),
                         ],
@@ -295,7 +304,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                           ),
                           onPressed: () =>
                               setState(() => showPassword = !showPassword),
-                          constraints: const BoxConstraints(),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                           padding: const EdgeInsets.only(right: 8),
                         ),
                         const SizedBox(width: 8),
@@ -308,7 +317,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                             ErrorSnackBar.showInfo(
                                 context, 'Password copied'.i18n);
                           },
-                          constraints: const BoxConstraints(),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                           padding: EdgeInsets.zero,
                         ),
                       ],
@@ -533,18 +542,20 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                                 size: 20),
                                             onPressed: () async {
                                               final edited =
-                                                  await showModalBottomSheet<bool>(
+                                                  await showDialog<bool>(
                                                 context: context,
-                                                isScrollControlled: true,
-                                                backgroundColor: Colors.transparent,
-                                                builder: (context) => Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                                                  ),
-                                                  child: EditPasswordScreen(
-                                                    passwordsRepository:
-                                                        _passwordsRepository,
-                                                    passwordEntry: entry,
+                                                builder: (context) => Center(
+                                                  child: SizedBox(
+                                                    width: 400,
+                                                    child: Dialog(
+                                                      backgroundColor: Colors.transparent,
+                                                      elevation: 0,
+                                                      child: EditPasswordScreen(
+                                                        passwordsRepository:
+                                                            _passwordsRepository,
+                                                        passwordEntry: entry,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -552,7 +563,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                                 _loadPasswords();
                                               }
                                             },
-                                            constraints: const BoxConstraints(),
+                                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                                             padding: const EdgeInsets.all(8),
                                           ),
                                           IconButton(
@@ -562,7 +573,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                                 size: 20),
                                             onPressed: () =>
                                                 _deletePassword(entry),
-                                            constraints: const BoxConstraints(),
+                                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                                             padding: const EdgeInsets.all(8),
                                           ),
                                         ],
@@ -585,7 +596,6 @@ class _PasswordScreenState extends State<PasswordScreen> {
           child: ExpandableActionButton(
             onCreatePassword: _createPassword,
             onCreateNote: _createNote,
-            onCreateGeneratePassword: _quickGeneratePassword,
           ),
         ),
       ],

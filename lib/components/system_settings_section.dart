@@ -263,7 +263,7 @@ class _SystemSettingsSectionState extends State<SystemSettingsSection> {
               ),
               onPressed: () => _service.openNotificationSettings(),
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
             ),
           ),
           _itemDivider(),

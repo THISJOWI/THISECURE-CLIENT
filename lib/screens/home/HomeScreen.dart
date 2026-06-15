@@ -51,16 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   String _searchQuery = '';
   VoidCallback? _syncListener;
+  SyncProvider? _syncProvider;
 
   @override
   void dispose() {
     _searchDebounce.dispose();
-    if (_syncListener != null) {
-      try {
-        context.read<SyncProvider>().removeListener(_syncListener!);
-      } catch (_) {}
-      _syncListener = null;
-    }
+    _syncProvider?.removeListener(_syncListener!);
+    _syncListener = null;
     super.dispose();
   }
 
@@ -68,24 +65,22 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _initRepositories();
+    _syncProvider = context.read<SyncProvider>();
     _loadData();
     _checkAutofill();
     _listenToSyncEvents();
   }
 
   void _listenToSyncEvents() {
-    try {
-      final syncProvider = context.read<SyncProvider>();
-      _syncListener = () {
-        final info = syncProvider.lastEventInfo;
-        if (info.startsWith('password/') || info.startsWith('note/')) {
-          _loadData();
-        }
-      };
-      syncProvider.addListener(_syncListener!);
-    } catch (_) {
-      // SyncProvider might not be available in tests
-    }
+    final syncProvider = _syncProvider;
+    if (syncProvider == null) return;
+    _syncListener = () {
+      final info = syncProvider.lastEventInfo;
+      if (info.startsWith('password/') || info.startsWith('note/')) {
+        _loadData();
+      }
+    };
+    syncProvider.addListener(_syncListener!);
   }
 
   Future<void> _checkAutofill() async {
@@ -263,6 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
     setState(() => _isLoading = true);
 
     // Load both in parallel - WAIT for sync to complete
@@ -347,14 +343,23 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                 '${'Are you sure you want to delete'.i18n} "${entry.title}"?',
                 style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
             actions: [
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text('Cancel'.i18n,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.withValues(alpha: 0.8),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Cancel'.i18n),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text('Delete'.i18n, style: TextStyle(color: Colors.red)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Delete'.i18n),
               ),
             ],
           ),
@@ -401,14 +406,23 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                 '${'Are you sure you want to delete'.i18n} "${note.title}"?',
                 style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
             actions: [
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text('Cancel'.i18n,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.withValues(alpha: 0.8),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Cancel'.i18n),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text('Delete'.i18n, style: TextStyle(color: Colors.red)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text('Delete'.i18n),
               ),
             ],
           ),
@@ -525,7 +539,7 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                                 ErrorSnackBar.showInfo(
                                     context, 'User copied'.i18n);
                               },
-                              constraints: const BoxConstraints(),
+                              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                               padding: EdgeInsets.zero,
                             ),
                           ],
@@ -569,7 +583,7 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                                 size: 18),
                             onPressed: () =>
                                 setState(() => showPassword = !showPassword),
-                            constraints: const BoxConstraints(),
+                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                             padding: const EdgeInsets.only(right: 8),
                           ),
                           const SizedBox(width: 8),
@@ -583,7 +597,7 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                               ErrorSnackBar.showInfo(
                                   context, 'Password copied'.i18n);
                             },
-                            constraints: const BoxConstraints(),
+                            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                             padding: EdgeInsets.zero,
                           ),
                         ],
@@ -775,8 +789,6 @@ SafeArea(
                   GlobalActions.createNote(context, onSuccess: _loadData),
               onCreateOtp: () => GlobalActions.createOtp(context),
               onCreateMessage: () => GlobalActions.createMessage(context),
-              onCreateGeneratePassword: () =>
-                  GlobalActions.quickGeneratePassword(context),
             ),
           ),
         ],
@@ -885,30 +897,32 @@ SafeArea(
                         icon: Icon(Icons.edit_outlined,
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
                         onPressed: () async {
-                          final edited = await showModalBottomSheet<bool>(
+                          final edited = await showDialog<bool>(
                             context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) => Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(context).viewInsets.bottom,
-                              ),
-                              child: EditPasswordScreen(
-                                passwordsRepository: _passwordsRepository,
-                                passwordEntry: entry,
+                            builder: (context) => Center(
+                              child: SizedBox(
+                                width: 400,
+                                child: Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  child: EditPasswordScreen(
+                                    passwordsRepository: _passwordsRepository,
+                                    passwordEntry: entry,
+                                  ),
+                                ),
                               ),
                             ),
                           );
                           if (edited == true) _loadData();
                         },
-                        constraints: const BoxConstraints(),
+                        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         padding: const EdgeInsets.all(8),
                       ),
                       IconButton(
                         icon: Icon(Icons.delete_outline,
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
                         onPressed: () => _deletePassword(entry),
-                        constraints: const BoxConstraints(),
+                        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         padding: const EdgeInsets.all(8),
                       ),
                     ],
@@ -992,7 +1006,7 @@ SafeArea(
                         icon: Icon(Icons.delete_outline,
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
                         onPressed: () => _deleteNote(note),
-                        constraints: const BoxConstraints(),
+                        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         padding: const EdgeInsets.all(8),
                       ),
                     ],

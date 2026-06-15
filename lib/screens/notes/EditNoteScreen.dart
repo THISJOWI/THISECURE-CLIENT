@@ -247,20 +247,19 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       const Spacer(),
-                      GestureDetector(
-                        onTap: _isLoading ? null : _saveNote,
-                        child: Padding(
+                      TextButton(
+                        onPressed: _isLoading ? null : _saveNote,
+                        style: TextButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.primary,
+                          textStyle: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          minimumSize: const Size(44, 44),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
-                          child: Text(
-                            'Done'.i18n,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                         ),
+                        child: Text('Done'.i18n),
                       ),
                     ],
                   ),

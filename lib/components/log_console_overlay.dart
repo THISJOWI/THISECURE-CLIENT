@@ -171,7 +171,7 @@ void _clearLogs() {
                           ),
                           onPressed: () => setState(() => _isMinimized = !_isMinimized),
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         ),
                         // Clear button
                         IconButton(
@@ -182,7 +182,7 @@ void _clearLogs() {
                           ),
                           onPressed: _clearLogs,
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         ),
                         // Close button
                         IconButton(
@@ -193,7 +193,7 @@ void _clearLogs() {
                           ),
                           onPressed: () => setState(() => _isVisible = false),
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                         ),
                       ],
                     ),

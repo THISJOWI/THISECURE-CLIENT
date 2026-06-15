@@ -350,15 +350,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: TextButton(
+                        child: ElevatedButton(
                           onPressed: () => Navigator.pop(context),
-                          style: TextButton.styleFrom(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red.withValues(alpha: 0.8),
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
                           ),
-                          child: Text('Cancel'.i18n,
-                              style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                          child: Text('Cancel'.i18n),
                         ),
                       ),
                       const SizedBox(width: 16),

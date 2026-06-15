@@ -315,18 +315,20 @@ class _SavePasswordDialogState extends State<SavePasswordDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: _isLoading
                           ? null
                           : () {
                               Navigator.of(context).pop(false);
                             },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.withValues(alpha: 0.8),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
                       child: Text(
                         'Cancel'.i18n,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                          fontSize: 16,
-                        ),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                     const SizedBox(width: 12),

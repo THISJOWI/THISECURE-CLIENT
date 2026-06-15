@@ -9,6 +9,7 @@ import 'package:thisjowi/services/auth_service.dart';
 import 'package:thisjowi/services/account_service.dart';
 import 'package:thisjowi/services/profile_service.dart';
 import 'package:thisjowi/services/biometricService.dart';
+import 'package:thisjowi/services/logoutService.dart';
 import 'package:thisjowi/core/providers/sync_provider.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 import 'package:provider/provider.dart';
@@ -152,9 +153,10 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> _loadBiometricStatus() async {
+    final userId = await _authService.getUserId();
     final canCheck = await _biometricService.canCheckBiometrics();
     final isSupported = await _biometricService.isDeviceSupported();
-    final isEnabled = await _biometricService.isBiometricEnabled();
+    final isEnabled = await _biometricService.isBiometricEnabled(userId: userId);
     final biometricType = await _biometricService.getBiometricTypeName();
 
     if (mounted) {
@@ -167,14 +169,14 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> _toggleBiometric(bool value) async {
+    final userId = _currentAuthUser?.id;
     if (value) {
-      // Authenticate before enabling
       final authenticated = await _biometricService.authenticate(
         localizedReason: 'Authenticate to enable biometric lock'.i18n,
       );
 
       if (authenticated) {
-        await _biometricService.setBiometricEnabled(true);
+        await _biometricService.setBiometricEnabled(true, userId: userId);
         if (mounted) {
           setState(() => _biometricEnabled = true);
           ErrorSnackBar.showSuccess(context, 'Biometric enabled'.i18n);
@@ -185,7 +187,7 @@ class _SettingScreenState extends State<SettingScreen> {
         }
       }
     } else {
-      await _biometricService.setBiometricEnabled(false);
+      await _biometricService.setBiometricEnabled(false, userId: userId);
       if (mounted) {
         setState(() => _biometricEnabled = false);
         ErrorSnackBar.showSuccess(context, 'Biometric disabled'.i18n);
@@ -578,6 +580,11 @@ class _SettingScreenState extends State<SettingScreen> {
     try {
       await _accountService.deleteAccount(password);
       if (!mounted) return;
+      final userId = _currentAuthUser?.id;
+      await _authService.logout();
+      await LogoutService().logout();
+      await _biometricService.setBiometricEnabled(false, userId: userId);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/login');
       ErrorSnackBar.showSuccess(context, 'Account deleted successfully'.i18n);
     } on AccountException catch (e) {
@@ -930,14 +937,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Cancel'.i18n,
-                          style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.7))),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.withValues(alpha: 0.8),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      child: Text('Cancel'.i18n),
                     ),
                   ],
                 ),
@@ -1025,17 +1032,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'Cancel'.i18n,
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.7),
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.withValues(alpha: 0.8),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
+                      child: Text('Cancel'.i18n),
                     ),
                     const SizedBox(width: 16),
                     ElevatedButton(
@@ -1068,6 +1072,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor:
                             Theme.of(context).colorScheme.onPrimary,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                       child: Text('Save'.i18n,
                         style: const TextStyle(fontWeight: FontWeight.w600),

@@ -7,7 +7,6 @@ class ExpandableActionButton extends StatefulWidget {
   final VoidCallback onCreateNote;
   final VoidCallback? onCreateOtp;
   final VoidCallback? onCreateMessage;
-  final VoidCallback? onCreateGeneratePassword;
 
   const ExpandableActionButton({
     super.key,
@@ -15,7 +14,6 @@ class ExpandableActionButton extends StatefulWidget {
     required this.onCreateNote,
     this.onCreateOtp,
     this.onCreateMessage,
-    this.onCreateGeneratePassword,
   });
 
   @override
@@ -88,16 +86,6 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
     });
   }
 
-  void _handleGeneratePassword() {
-    setState(() => _isExpanded = false);
-    _animationController?.reverse();
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted && widget.onCreateGeneratePassword != null) {
-        widget.onCreateGeneratePassword!();
-      }
-    });
-  }
-
   Widget _buildOptionButton({
     required VoidCallback onTap,
     required IconData icon,
@@ -124,9 +112,13 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
                   color: (Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF2A2A2A)).withValues(alpha: 0.85),
                   borderRadius: BorderRadius.circular(24),
                 ),
-                child: GestureDetector(
-                  onTap: onTap,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onTap,
+                    borderRadius: BorderRadius.circular(24),
               child: Container(
+                constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -148,6 +140,7 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
                 ),
               ),
             ),
+          ),
           ),
         ),
       ),
@@ -175,15 +168,7 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
             onTap: _handleCreateOtp,
             icon: Icons.security_rounded,
             label: 'OTP'.i18n,
-            bottomPadding: 240.0,
-          ),
-        // Option: Generate Password
-        if (_isExpanded && widget.onCreateGeneratePassword != null)
-          _buildOptionButton(
-            onTap: _handleGeneratePassword,
-            icon: Icons.auto_awesome,
-            label: 'Generate Password'.i18n,
-            bottomPadding: 185.0,
+            bottomPadding: 190.0,
           ),
         // Option: Create Password
         if (_isExpanded)
@@ -191,7 +176,7 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
             onTap: _handleCreatePassword,
             icon: Icons.key_rounded,
             label: 'Password'.i18n,
-            bottomPadding: 130.0,
+            bottomPadding: 135.0,
           ),
         // Option: Create Note
         if (_isExpanded)
@@ -199,12 +184,15 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
             onTap: _handleCreateNote,
             icon: Icons.description_outlined,
             label: 'Note'.i18n,
-            bottomPadding: 75.0,
+            bottomPadding: 80.0,
           ),
         // Main FAB button - Pill shape
-        GestureDetector(
-          onTap: _toggleExpand,
-          child: TweenAnimationBuilder<double>(
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _toggleExpand,
+            borderRadius: BorderRadius.circular(28),
+            child: TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: _isExpanded ? 1.0 : 0.0),
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
@@ -261,6 +249,7 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
             },
           ),
         ),
+      ),
       ],
     );
   }
