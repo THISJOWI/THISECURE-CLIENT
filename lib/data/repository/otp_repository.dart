@@ -206,10 +206,21 @@ class OtpRepository {
     }
   }
 
-  /// Sync a newly created OTP entry with backend
+  final Map<String, int> _syncRetries = {};
+
+  /// Sync a newly created OTP entry with backend (max 5 retries)
   Future<void> _syncOtpInBackground(String localId, model.OtpEntry entry) async {
     if (_syncingIds.contains(localId)) return;
     _syncingIds.add(localId);
+
+    int attempts = _syncRetries[localId] ?? 0;
+    if (attempts >= 5) {
+      _syncingIds.remove(localId);
+      await _db.otpDao.updateOtpEntry(localId, {
+        'syncStatus': 'failed',
+      });
+      return;
+    }
 
     try {
       final result = await _otpApiService.createOtpEntry(entry);
@@ -222,14 +233,17 @@ class OtpRepository {
           'syncStatus': 'synced',
           'lastSyncedAt': DateTime.now().toIso8601String(),
         });
+        _syncRetries.remove(localId);
       } else {
-        appLog.e('OTP sync failed: ${result['message']}');
+        _syncRetries[localId] = attempts + 1;
+        appLog.e('OTP sync failed (${attempts + 1}/5): ${result['message']}');
         await _db.otpDao.updateOtpEntry(localId, {
           'syncStatus': 'error',
         });
       }
     } catch (e, st) {
-      appLog.e('Background sync failed', error: e, stackTrace: st);
+      _syncRetries[localId] = attempts + 1;
+      appLog.e('Background sync failed (${attempts + 1}/5)', error: e, stackTrace: st);
       await _db.otpDao.updateOtpEntry(localId, {
         'syncStatus': 'error',
       });

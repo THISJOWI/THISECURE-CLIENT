@@ -161,6 +161,7 @@ class GlobalActions {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red.withValues(alpha: 0.8),
                               foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             ),
                             onPressed: () => Navigator.pop(context, false),
                             child: Text('Cancel'.i18n),
@@ -170,6 +171,7 @@ class GlobalActions {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).colorScheme.primary,
                               foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             ),
                             onPressed: () => Navigator.pop(context, true),
                             child: Text('Add'.i18n),
@@ -371,6 +373,7 @@ class GlobalActions {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red.withValues(alpha: 0.8),
                             foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                           onPressed: () => Navigator.pop(context, false),
                           child: Text('Cancel'.i18n),
@@ -380,6 +383,7 @@ class GlobalActions {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).colorScheme.primary,
                             foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                           onPressed: () async {
                             final name = nameController.text.trim();
@@ -432,38 +436,8 @@ class GlobalActions {
       ),
     );
 
-    if (result == true) {
-      final name = nameController.text.trim();
-      final secret = secretController.text.trim().replaceAll(' ', '');
-
-      if (name.isEmpty || secret.isEmpty) {
-        if (context.mounted) {
-          ErrorSnackBar.show(context, 'Name and secret are required'.i18n);
-        }
-        return;
-      }
-
-      if (!otpService.isValidSecret(secret)) {
-        if (context.mounted) ErrorSnackBar.show(context, 'Invalid secret key'.i18n);
-        return;
-      }
-
-      // Use Provider to add OTP - this will notify all listeners
-      if (context.mounted) {
-        final otpProvider = context.read<OtpProvider>();
-        final success = await otpProvider.addOtpEntry({
-          'name': name,
-          'issuer': issuerController.text.trim(),
-          'secret': secret,
-        });
-
-        if (success) {
-          ErrorSnackBar.showSuccess(context, 'OTP added'.i18n);
-          if (onSuccess != null) onSuccess();
-        } else {
-          ErrorSnackBar.show(context, otpProvider.errorMessage);
-        }
-      }
+    if (result == true && onSuccess != null) {
+      onSuccess();
     }
   }
 }
