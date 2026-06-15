@@ -63,21 +63,12 @@ final TokenManager _tokenManager = TokenManager();
     }
   }
 
-  /// Obtener perfil de usuario
+  /// Obtener perfil de usuario con reintentos en caso de 404
   Future<ProfileUser> getProfile(String userId) async {
     logInfo('Fetching profile for user: $userId');
 
     try {
-      final response = await apiClient.get(
-        '/v1/profiles/$userId',
-        requiresAuth: true,
-      );
-
-      validateResponse(response);
-
-      final body = parseJsonBody(response);
-      final profile = ProfileUser.fromJson(body);
-
+      final profile = await _getProfileWithRetry(userId);
       logInfo('Profile fetched successfully for user: $userId');
       return profile;
     } on ProfileException {
@@ -90,6 +81,28 @@ final TokenManager _tokenManager = TokenManager();
         details: e,
       );
     }
+  }
+
+  Future<ProfileUser> _getProfileWithRetry(String userId) async {
+    const maxRetries = 3;
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        final response = await apiClient.get(
+          '/v1/profiles/$userId',
+          requiresAuth: true,
+        );
+
+        validateResponse(response);
+
+        final body = parseJsonBody(response);
+        return ProfileUser.fromJson(body);
+      } on ProfileNotFoundException {
+        if (attempt >= maxRetries - 1) rethrow;
+        logWarning('Profile not found (attempt ${attempt + 1}), retrying...');
+        await Future.delayed(Duration(seconds: 2 * (attempt + 1)));
+      }
+    }
+    throw const ProfileNotFoundException();
   }
 
   /// Obtener perfil del usuario actual
