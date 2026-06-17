@@ -11,6 +11,15 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+* 2.*
+* 3.*
+* 4.*
+* 5.*
+* 6.*
+temp_*.json
+session-*.md
+skills-lock*.json
+*.md 2.dart
 
 # IntelliJ related
 *.iml
