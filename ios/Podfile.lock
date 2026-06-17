@@ -1,21 +1,15 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_watch_os_connectivity (1.0.0):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_watch_os_connectivity (from `.symlinks/plugins/flutter_watch_os_connectivity/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_watch_os_connectivity:
-    :path: ".symlinks/plugins/flutter_watch_os_connectivity/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_watch_os_connectivity: bdd14732e8ecea581b015c507a2bd833e0f5792d
 
 PODFILE CHECKSUM: 970e3aef70626993b80c6be8010976dd7b998281
 

@@ -32,6 +32,15 @@ class ThisjowiAutofillService : AutofillService() {
     ) {
         Log.d(TAG, "onFillRequest called")
         
+        // Phase 2: If we have stored credentials from a previous authentication
+        // (user picked a credential in MainActivity), fill them in directly.
+        if (AutofillCredentialStore.hasCredentials) {
+            Log.d(TAG, "Stored credentials found - filling real values")
+            fillWithStoredCredentials(request, callback)
+            return
+        }
+
+        // Phase 1: First request - show authentication dataset
         val structure = request.fillContexts.lastOrNull()?.structure
         if (structure == null) {
             callback.onSuccess(null)
@@ -99,6 +108,68 @@ class ThisjowiAutofillService : AutofillService() {
         } catch (e: Exception) {
             Log.e(TAG, "Error building autofill response", e)
             callback.onFailure("Error building response: ${e.message}")
+        }
+    }
+
+    /**
+     * Phase 2 of the autofill flow: user has already authenticated and selected
+     * a credential in MainActivity. Build a FillResponse with the actual values
+     * to populate the target fields.
+     */
+    private fun fillWithStoredCredentials(
+        request: FillRequest,
+        callback: FillCallback
+    ) {
+        val structure = request.fillContexts.lastOrNull()?.structure
+        if (structure == null) {
+            AutofillCredentialStore.clear()
+            callback.onSuccess(null)
+            return
+        }
+
+        val parsedFields = parseStructure(structure)
+        val username = AutofillCredentialStore.username
+        val password = AutofillCredentialStore.password
+
+        if (parsedFields.usernameId == null && parsedFields.passwordId == null) {
+            Log.d(TAG, "No autofillable fields found in second pass")
+            AutofillCredentialStore.clear()
+            callback.onSuccess(null)
+            return
+        }
+
+        val datasetBuilder = Dataset.Builder()
+
+        parsedFields.usernameId?.let { usernameId ->
+            if (!username.isNullOrEmpty()) {
+                datasetBuilder.setValue(
+                    usernameId,
+                    AutofillValue.forText(username)
+                )
+                Log.d(TAG, "Filling username into field")
+            }
+        }
+
+        parsedFields.passwordId?.let { passwordId ->
+            if (!password.isNullOrEmpty()) {
+                datasetBuilder.setValue(
+                    passwordId,
+                    AutofillValue.forText(password)
+                )
+                Log.d(TAG, "Filling password into field")
+            }
+        }
+
+        val responseBuilder = FillResponse.Builder()
+        try {
+            responseBuilder.addDataset(datasetBuilder.build())
+            callback.onSuccess(responseBuilder.build())
+            Log.d(TAG, "Fill completed successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error building fill response with stored credentials", e)
+            callback.onFailure("Error building response: ${e.message}")
+        } finally {
+            AutofillCredentialStore.clear()
         }
     }
 

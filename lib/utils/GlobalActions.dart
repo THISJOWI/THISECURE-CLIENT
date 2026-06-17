@@ -11,40 +11,8 @@ import 'package:thisjowi/utils/DialogUtils.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
-import 'package:thisjowi/data/local/secure_storage_service.dart';
-import 'package:thisjowi/services/passkeyService.dart';
-import 'package:thisjowi/services/passkey_ceremony_service.dart';
-import 'package:thisjowi/screens/passkey/register_passkey_screen.dart';
 
 class GlobalActions {
-  static final SecureStorageService _secureStorage = SecureStorageService();
-
-  static Future<String?> _currentUserEmail() async {
-    try {
-      return await _secureStorage.getValue('cached_email');
-    } catch (_) {
-      return null;
-    }
-  }
-
-  static Future<void> createPasskey(BuildContext context,
-      {VoidCallback? onSuccess}) async {
-    final passkeyService = PasskeyService();
-    final ceremony = PasskeyCeremonyService();
-    final email = await _currentUserEmail() ?? 'user';
-    final created = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RegisterPasskeyScreen(
-          passkeyService: passkeyService,
-          ceremonyService: ceremony,
-          userDisplayName: email,
-        ),
-      ),
-    );
-    if (created == true && onSuccess != null) onSuccess();
-  }
-
   static Future<void> createPassword(BuildContext context,
       {VoidCallback? onSuccess}) async {
     final repository = context.read<PasswordsRepository>();

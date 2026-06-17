@@ -7,7 +7,6 @@ class ExpandableActionButton extends StatefulWidget {
   final VoidCallback onCreateNote;
   final VoidCallback? onCreateOtp;
   final VoidCallback? onCreateMessage;
-  final VoidCallback? onCreatePasskey;
 
   const ExpandableActionButton({
     super.key,
@@ -15,7 +14,6 @@ class ExpandableActionButton extends StatefulWidget {
     required this.onCreateNote,
     this.onCreateOtp,
     this.onCreateMessage,
-    this.onCreatePasskey,
   });
 
   @override
@@ -85,14 +83,6 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
     _animationController?.reverse();
     Future.delayed(const Duration(milliseconds: 150), () {
       if (mounted && widget.onCreateOtp != null) widget.onCreateOtp!();
-    });
-  }
-
-  void _handleCreatePasskey() {
-    setState(() => _isExpanded = false);
-    _animationController?.reverse();
-    Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted && widget.onCreatePasskey != null) widget.onCreatePasskey!();
     });
   }
 
@@ -172,14 +162,6 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        // Option: Create Passkey
-        if (_isExpanded && widget.onCreatePasskey != null)
-          _buildOptionButton(
-            onTap: _handleCreatePasskey,
-            icon: Icons.fingerprint,
-            label: 'Passkey'.i18n,
-            bottomPadding: 245.0,
-          ),
         // Option: Create OTP
         if (_isExpanded && widget.onCreateOtp != null)
           _buildOptionButton(

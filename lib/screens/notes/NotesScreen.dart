@@ -1,12 +1,11 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:thisjowi/components/error_bar.dart';
 import 'package:thisjowi/core/providers/sync_provider.dart';
 import 'package:thisjowi/data/models/note_entry.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
 import 'package:thisjowi/i18n/translations.dart';
+import 'package:thisjowi/utils/note_content_utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/animations/animated_widgets.dart';
@@ -257,14 +256,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   String _computePreview(String content) {
-    try {
-      if (content.isEmpty) return 'No Content'.i18n;
-      final json = jsonDecode(content);
-      final doc = Document.fromJson(json);
-      return doc.toPlainText().replaceAll('\n', ' ').trim();
-    } catch (e) {
-      return content.replaceAll('\n', ' ').trim();
-    }
+    return NoteContentUtils.preview(content);
   }
 
   String _getPreviewText(Note note) {

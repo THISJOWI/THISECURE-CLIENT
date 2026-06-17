@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:thisjowi/data/models/note_entry.dart';
 import 'package:thisjowi/components/liquid_glass.dart';
 import 'package:thisjowi/i18n/translations.dart';
+import 'package:thisjowi/utils/note_content_utils.dart';
 
 class NoteItem extends StatelessWidget {
   final Note note;
@@ -66,7 +67,7 @@ class NoteItem extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              note.content,
+                              NoteContentUtils.preview(note.content),
                               style: TextStyle(
                                   color: Theme.of(context)
                                       .colorScheme

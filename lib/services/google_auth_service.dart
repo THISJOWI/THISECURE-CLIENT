@@ -62,9 +62,13 @@ class GoogleAuthService extends BaseService {
 
       if (token == null || token.isEmpty) {
         final error = callback.queryParameters['error'];
+        final errorDescription = callback.queryParameters['error_description'];
         throw AuthException(
-          message: error != null ? 'Error de Google: $error' : 'No se recibio el token de autenticacion',
-          code: 'NO_TOKEN',
+          message: errorDescription != null
+              ? 'Error de Google: $errorDescription'
+              : (error != null ? 'Error de Google: $error' : 'No se recibio el token de autenticacion'),
+          code: error ?? 'NO_TOKEN',
+          details: errorDescription ?? error,
         );
       }
 

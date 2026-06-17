@@ -18,6 +18,11 @@ class MainActivity : FlutterFragmentActivity() {
     private var pendingAutofillSave: Boolean = false
     private var pendingSaveUsername: String? = null
     private var pendingSavePassword: String? = null
+    
+    // Track if the activity was launched from an autofill request,
+    // so we can finish() it after credentials are provided to let the
+    // autofill framework re-trigger onFillRequest and complete the fill.
+    private var isFromAutofill: Boolean = false
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -59,6 +64,14 @@ class MainActivity : FlutterFragmentActivity() {
                     AutofillCredentialStore.password = password
                     AutofillCredentialStore.hasCredentials = true
                     result.success(true)
+                    
+                    // If the activity was launched from an autofill request,
+                    // finishing it signals the autofill framework to re-trigger
+                    // onFillRequest, which will then fill the stored credentials.
+                    if (isFromAutofill) {
+                        isFromAutofill = false
+                        finish()
+                    }
                 }
                 else -> {
                     result.notImplemented()
@@ -81,6 +94,7 @@ class MainActivity : FlutterFragmentActivity() {
         if (intent.getBooleanExtra("autofill_request", false)) {
             pendingAutofillPackage = intent.getStringExtra("target_package")
             pendingAutofillSave = false
+            isFromAutofill = true
         } else if (intent.getBooleanExtra("autofill_save", false)) {
             pendingAutofillPackage = intent.getStringExtra("target_package")
             pendingAutofillUrl = intent.getStringExtra("target_url")

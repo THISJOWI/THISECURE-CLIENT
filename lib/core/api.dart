@@ -49,12 +49,6 @@ class ApiConfig {
     return '$baseUrl$path';
   }
 
-  /// URL completa para el servicio de passkeys
-  static String get passkeysUrl {
-    final path = EnvLoader.getRequired('PASSKEY_SERVICE_URL');
-    return '$baseUrl$path';
-  }
-
   /// URL completa para el servicio de mensajería
   static String get messagesUrl {
     final path = EnvLoader.getRequired('MESSAGES_SERVICE_URL');

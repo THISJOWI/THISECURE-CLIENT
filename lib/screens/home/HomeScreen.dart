@@ -22,10 +22,6 @@ import 'package:thisjowi/services/autofillService.dart';
 import 'package:thisjowi/screens/home/components/password_item.dart';
 import 'package:thisjowi/screens/home/components/note_item.dart';
 import 'package:thisjowi/screens/home/components/empty_state.dart';
-import 'package:thisjowi/screens/home/components/passkey_item.dart';
-import 'package:thisjowi/screens/passkey/passkey_details_dialog.dart';
-import 'package:thisjowi/data/models/passkey_entry.dart';
-import 'package:thisjowi/services/passkeyService.dart';
 import 'package:thisjowi/components/animations/animated_widgets.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,12 +34,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final PasswordsRepository _passwordsRepository;
   late final NotesRepository _notesRepository;
-  late final PasskeyService _passkeyService;
   final _searchDebounce = SearchDebounce();
 
   List<PasswordEntry> _passwords = [];
   List<Note> _notes = [];
-  List<PasskeyEntry> _passkeys = [];
   bool _isLoading = true;
   bool _showSkeletons = false;
   Timer? _skeletonTimer;
@@ -76,8 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _syncListener = () {
       final info = syncProvider.lastEventInfo;
       if (info.startsWith('password/') ||
-          info.startsWith('note/') ||
-          info.startsWith('passkey/')) {
+          info.startsWith('note/')) {
         _loadData();
       }
     };
@@ -218,7 +211,6 @@ class _HomeScreenState extends State<HomeScreen> {
     
     _passwordsRepository = PasswordsRepository();
     _notesRepository = NotesRepository();
-    _passkeyService = PasskeyService();
   }
 
   /// Extrae el texto plano del contenido JSON Delta de una nota
@@ -274,18 +266,15 @@ class _HomeScreenState extends State<HomeScreen> {
     final results = await Future.wait([
       _passwordsRepository.getAllPasswords(waitForSync: true),
       _notesRepository.getAllNotes(waitForSync: true),
-      _passkeyService.getAll(),
     ]);
 
     if (!mounted) return;
 
     final passwordResult = results[0];
     final notesResult = results[1];
-    final passkeyResult = results[2];
 
     List<PasswordEntry> passwords = [];
     List<Note> notes = [];
-    List<PasskeyEntry> passkeys = [];
 
     if (passwordResult['success'] == true) {
       final rawPasswords = passwordResult['data'] as List<PasswordEntry>? ?? [];
@@ -312,16 +301,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    if (passkeyResult['success'] == true) {
-      final raw = passkeyResult['data'];
-      if (raw is List) {
-        passkeys = raw
-            .whereType<Map>()
-            .map((m) => PasskeyEntry.fromJson(Map<String, dynamic>.from(m)))
-            .toList();
-      }
-    }
-
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
@@ -335,18 +314,11 @@ class _HomeScreenState extends State<HomeScreen> {
               n.title.toLowerCase().contains(query) ||
               n.content.toLowerCase().contains(query))
           .toList();
-      passkeys = passkeys
-          .where((p) =>
-              p.name.toLowerCase().contains(query) ||
-              p.rpName.toLowerCase().contains(query) ||
-              p.rpId.toLowerCase().contains(query))
-          .toList();
     }
 
     setState(() {
       _passwords = passwords;
       _notes = notes;
-      _passkeys = passkeys;
 _isLoading = false;
 });
 }
@@ -770,7 +742,7 @@ SafeArea(
                       : RefreshIndicator(
                           onRefresh: _loadData,
                           color: Theme.of(context).colorScheme.onSurface,
-                          child: _passwords.isEmpty && _notes.isEmpty && _passkeys.isEmpty
+                          child: _passwords.isEmpty && _notes.isEmpty
                               ? _buildEmptyState()
                               : ListView(
                                   padding: const EdgeInsets.only(bottom: 150),
@@ -809,31 +781,6 @@ SafeArea(
                                       ..._notes
                                           .map((note) => _buildNoteItem(note)),
                                     ],
-
-                                    // Divider between Notes and Passkeys
-                                    if (_notes.isNotEmpty && _passkeys.isNotEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 24, vertical: 8),
-                                        child: Divider(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface
-                                              .withValues(alpha: 0.1),
-                                          thickness: 1,
-                                        ),
-                                      ),
-
-                                    // Passkeys Section
-                                    if (_passkeys.isNotEmpty) ...[
-                                      _buildSectionHeader(
-                                        icon: Icons.fingerprint,
-                                        title: 'Passkeys'.i18n,
-                                        count: _passkeys.length,
-                                      ),
-                                      ..._passkeys
-                                          .map((entry) => _buildPasskeyItem(entry)),
-                                    ],
                                   ],
                                 ),
                         ),
@@ -852,8 +799,6 @@ SafeArea(
                   GlobalActions.createNote(context, onSuccess: _loadData),
               onCreateOtp: () => GlobalActions.createOtp(context),
               onCreateMessage: () => GlobalActions.createMessage(context),
-              onCreatePasskey: () =>
-                  GlobalActions.createPasskey(context, onSuccess: _loadData),
             ),
           ),
         ],
@@ -946,63 +891,6 @@ SafeArea(
       },
       onDelete: () => _deleteNote(note),
     );
-  }
-
-  Widget _buildPasskeyItem(PasskeyEntry entry) {
-    return PasskeyItem(
-      entry: entry,
-      onTap: () async {
-        final delete = await PasskeyDetailsDialog.show(context, entry);
-        if (delete == true) {
-          await _deletePasskey(entry);
-        }
-      },
-      onDelete: () => _deletePasskey(entry),
-    );
-  }
-
-  Future<void> _deletePasskey(PasskeyEntry entry) async {
-    final confirm = await _showDeletePasskeyConfirmation(entry);
-    if (!confirm) return;
-    final res = await _passkeyService.delete(entry.id);
-    if (!mounted) return;
-    if (res['success'] == true) {
-      setState(() => _passkeys.removeWhere((p) => p.id == entry.id));
-      ErrorSnackBar.showSuccess(context, 'Passkey deleted'.i18n);
-    } else {
-      ErrorSnackBar.show(context, res['message'] ?? 'Error deleting passkey');
-    }
-  }
-
-  Future<bool> _showDeletePasskeyConfirmation(PasskeyEntry entry) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (context) => BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: AlertDialog(
-              backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.85),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: Text('Delete passkey?'.i18n,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
-              content: Text(
-                '${'Are you sure you want to delete'.i18n} "${entry.name}"?',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red.withValues(alpha: 0.8)),
-                  child: Text('Cancel'.i18n),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: Text('Delete'.i18n),
-                ),
-              ],
-            ),
-          ),
-        ) ??
-        false;
   }
 
   Widget _buildSkeletonList() {
