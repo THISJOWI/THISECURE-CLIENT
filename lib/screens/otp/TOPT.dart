@@ -321,6 +321,8 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
                     onCreateOtp: () => GlobalActions.createOtp(context,
                         onSuccess: _refreshFromServer),
                     onCreateMessage: () => GlobalActions.createMessage(context),
+                    onCreatePasskey: () =>
+                        GlobalActions.createPasskey(context),
                   ),
                 ),
               ],
