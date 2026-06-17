@@ -19,6 +19,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:thisjowi/components/search_debounce.dart';
 import 'package:thisjowi/services/autofillService.dart';
+import 'package:thisjowi/screens/home/components/password_item.dart';
+import 'package:thisjowi/screens/home/components/note_item.dart';
+import 'package:thisjowi/screens/home/components/empty_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -824,219 +827,52 @@ SafeArea(
   }
 
   Widget _buildPasswordItem(PasswordEntry entry) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF2A2A2A)).withValues(alpha: 0.85),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => _showPasswordDetails(entry),
-                borderRadius: BorderRadius.circular(20),
-          child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 16.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(Icons.key, color: Theme.of(context).colorScheme.onSurface, size: 20),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.title,
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                            if (entry.username.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                entry.username,
-                                style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                    fontSize: 13),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.edit_outlined,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
-                        onPressed: () async {
-                          final edited = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => Center(
-                              child: SizedBox(
-                                width: 400,
-                                child: Dialog(
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  child: EditPasswordScreen(
-                                    passwordsRepository: _passwordsRepository,
-                                    passwordEntry: entry,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                          if (edited == true) _loadData();
-                        },
-                        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-                        padding: const EdgeInsets.all(8),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete_outline,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
-                        onPressed: () => _deletePassword(entry),
-                        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-                        padding: const EdgeInsets.all(8),
-                      ),
-                    ],
-                  ),
+    return PasswordItem(
+      entry: entry,
+      onTap: () => _showPasswordDetails(entry),
+      onEdit: () async {
+        final edited = await showDialog<bool>(
+          context: context,
+          builder: (context) => Center(
+            child: SizedBox(
+              width: 400,
+              child: Dialog(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: EditPasswordScreen(
+                  passwordsRepository: _passwordsRepository,
+                  passwordEntry: entry,
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+        if (edited == true) _loadData();
+      },
+      onDelete: () => _deletePassword(entry),
     );
   }
 
   Widget _buildNoteItem(Note note) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF2A2A2A)).withValues(alpha: 0.85),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () async {
-                  final edited = await Navigator.push<bool>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditNoteScreen(
-                        notesRepository: _notesRepository,
-                        note: note,
-                      ),
-                    ),
-                  );
-                  if (edited == true) _loadData();
-                },
-                borderRadius: BorderRadius.circular(20),
-          child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 16.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(Icons.description_outlined,
-                            color: Theme.of(context).colorScheme.onSurface, size: 20),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              note.title,
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _extractPlainText(note.content),
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                  fontSize: 13),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete_outline,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), size: 20),
-                        onPressed: () => _deleteNote(note),
-                        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-                        padding: const EdgeInsets.all(8),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+    return NoteItem(
+      note: note,
+      onTap: () async {
+        final edited = await Navigator.push<bool>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditNoteScreen(
+              notesRepository: _notesRepository,
+              note: note,
             ),
           ),
-        ),
-      ),
+        );
+        if (edited == true) _loadData();
+      },
+      onDelete: () => _deleteNote(note),
     );
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Opacity(
-            opacity: 0.2,
-            child: Icon(
-              Icons.house_rounded,
-              size: 100,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No data yet'.i18n,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-              fontSize: 18,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Add your first password or note'.i18n,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
+    return const HomeEmptyState();
   }
 }

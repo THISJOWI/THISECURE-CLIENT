@@ -28,6 +28,7 @@ import 'package:thisjowi/components/export_passwords_sheet.dart';
 import 'package:thisjowi/components/import_passwords_dialog.dart';
 import 'package:thisjowi/components/export_notes_sheet.dart';
 import 'package:thisjowi/components/import_notes_dialog.dart';
+import 'package:thisjowi/screens/settings/components/profile_card.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -1261,93 +1262,9 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
 
                 // Profile Section
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: GestureDetector(
-                    onTap: _showAvatarOptions,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.1),
-                            border: Border.all(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.2),
-                              width: 2,
-                            ),
-                            image: _currentProfile?.avatarUrl != null &&
-                                    _currentProfile!.avatarUrl!.isNotEmpty
-                                ? DecorationImage(
-                                    image: NetworkImage(
-                                      '${_currentProfile!.avatarUrl!.startsWith('http') ? '' : ApiConfig.baseUrl}${_currentProfile!.avatarUrl!}${_currentProfile!.avatarUrl!.contains('?') ? '&' : '?'}cb=$_avatarCacheBuster',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  )
-                                : null,
-                          ),
-                          child: _currentProfile?.avatarUrl == null
-                              ? Center(
-                                  child: Text(
-                                    _currentProfile?.initials ?? 'U',
-                                    style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.7),
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                )
-                              : null,
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _currentProfile?.fullName ?? 'User'.i18n,
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                _currentAuthUser?.email ?? '',
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withValues(alpha: 0.5),
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(
-                          Icons.chevron_right,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.4),
-                        ),
-                      ],
-                    ),
-                  ),
+                ProfileCard(
+                  authService: _authService,
+                  profileService: _profileService,
                 ),
 
                 // Settings List
