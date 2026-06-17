@@ -337,7 +337,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
       ),
       child: QuillSimpleToolbar(
         controller: _quillController,
-        config: QuillSimpleToolbarConfig(
+        config: const QuillSimpleToolbarConfig(
           multiRowsDisplay: false,
           showDividers: false,
           showFontFamily: false,
@@ -370,7 +370,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
           buttonOptions: QuillSimpleToolbarButtonOptions(
             base: QuillToolbarBaseButtonOptions(
               iconTheme: QuillIconTheme(
-                iconButtonUnselectedData: const IconButtonData(
+                iconButtonUnselectedData: IconButtonData(
                   iconSize: 18,
                 ),
               ),

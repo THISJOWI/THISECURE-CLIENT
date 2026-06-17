@@ -274,7 +274,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     leading: const Icon(Icons.delete_sweep_rounded,
                         color: Colors.red),
                     title: Text('Delete message'.i18n,
-                        style: TextStyle(color: Colors.red)),
+                        style: const TextStyle(color: Colors.red)),
                     onTap: () {
                       Navigator.pop(context);
                       _showDeleteConfirmation(msg);
@@ -378,7 +378,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 borderRadius: BorderRadius.circular(15)),
                           ),
                           child: Text('Delete'.i18n,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],

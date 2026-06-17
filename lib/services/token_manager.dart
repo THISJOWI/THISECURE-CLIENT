@@ -163,7 +163,7 @@ class TokenManager {
 
     // Considerar valido si falta mas de 5 minutos para expirar
     final now = DateTime.now();
-    final buffer = const Duration(minutes: 5);
+    const buffer = Duration(minutes: 5);
     return _cachedExpiry!.isAfter(now.add(buffer));
   }
 
@@ -192,7 +192,7 @@ class TokenManager {
     }
 
     // Token valido para offline si fue validado en los ultimos 7 dias
-    final offlineValidityWindow = const Duration(days: 7);
+    const offlineValidityWindow = Duration(days: 7);
     final now = DateTime.now();
     return now.difference(lastValidated) < offlineValidityWindow;
   }
@@ -268,7 +268,7 @@ class TokenManager {
     
     // Refrescar si falta menos de 10 minutos
     final now = DateTime.now();
-    final refreshThreshold = const Duration(minutes: 10);
+    const refreshThreshold = Duration(minutes: 10);
     return expiry.difference(now) < refreshThreshold;
   }
 }

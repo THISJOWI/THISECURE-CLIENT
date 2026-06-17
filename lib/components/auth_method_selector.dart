@@ -130,10 +130,10 @@ class AuthMethodSelector extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.window,
                             size: 24,
-                            color: const Color(0xFF00A4EF),
+                            color: Color(0xFF00A4EF),
                           ),
                           const SizedBox(width: 12),
                           Text(

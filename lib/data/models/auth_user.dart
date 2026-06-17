@@ -149,7 +149,7 @@ class AuthUser {
   bool get isTokenExpired {
     if (tokenExpiry == null) return false;
     // Considerar expirado si falta menos de 5 minutos
-    final buffer = const Duration(minutes: 5);
+    const buffer = Duration(minutes: 5);
     return tokenExpiry!.isBefore(DateTime.now().add(buffer));
   }
 
@@ -158,7 +158,7 @@ class AuthUser {
     if (token.isEmpty) return false;
     if (lastValidated == null) return false;
     // Validar si fue validado en los ultimos 7 dias
-    final offlineWindow = const Duration(days: 7);
+    const offlineWindow = Duration(days: 7);
     return DateTime.now().difference(lastValidated!) < offlineWindow;
   }
 

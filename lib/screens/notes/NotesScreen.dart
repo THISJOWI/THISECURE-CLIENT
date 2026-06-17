@@ -284,7 +284,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   pinned: true,
                   expandedHeight: 80,
                   collapsedHeight: 44,
-                  actions: [
+                  actions: const [
                     // Edit button usually goes here in Apple Notes, but for now we might leave it or add bulk actions later
                   ],
                 ),

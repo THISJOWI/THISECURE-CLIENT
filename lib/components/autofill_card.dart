@@ -138,7 +138,7 @@ class _AutofillSettingsCardState extends State<AutofillSettingsCard> {
                     ),
                     child: Text(
                       'Active'.i18n,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.green,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

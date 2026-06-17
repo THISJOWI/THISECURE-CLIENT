@@ -148,7 +148,7 @@ class OtpEntry {
     
     final secret = params['secret'] ?? '';
     if (secret.isEmpty) {
-      throw FormatException('Missing secret in OTP URI');
+      throw const FormatException('Missing secret in OTP URI');
     }
     
     final digits = int.tryParse(params['digits'] ?? '6') ?? 6;

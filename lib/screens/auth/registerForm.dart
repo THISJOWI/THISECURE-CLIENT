@@ -154,7 +154,7 @@ class _RegisterFormState extends State<RegisterForm> {
               left: 0,
               child: SafeArea(
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   color: isDark ? Colors.white : Theme.of(context).colorScheme.onSurface,
                   onPressed: widget.onBack,
                 ),
@@ -465,7 +465,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             const SizedBox(width: 20),
                             SocialLoginButton(
                               icon: Icons.window,
-                              color: Color(0xFF00A4EF),
+                              color: const Color(0xFF00A4EF),
                               onTap: () => _handleSocialLogin(_microsoftAuthService.login),
                             ),
                           ],

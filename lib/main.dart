@@ -167,9 +167,9 @@ class _AppCore extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
           FlutterQuillLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('es'),
+        supportedLocales: const [
+          Locale('en'),
+          Locale('es'),
           ...FlutterQuillLocalizations.supportedLocales,
         ],
         builder: (context, child) => PrivacyOverlay(child: child!),

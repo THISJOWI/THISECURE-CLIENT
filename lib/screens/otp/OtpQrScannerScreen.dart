@@ -109,7 +109,7 @@ class _OtpQrScannerScreenState extends State<OtpQrScannerScreen> {
                 const Spacer(),
                 Text(
                   "Scan QR Code".i18n,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

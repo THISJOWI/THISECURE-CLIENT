@@ -29,12 +29,12 @@ final TokenManager _tokenManager = TokenManager();
         message: extractErrorMessage(response),
       );
       case 401:
-        throw ProfileException(
+        throw const ProfileException(
           message: 'Sesion expirada. Inicia sesion nuevamente.',
           code: 'UNAUTHORIZED',
         );
       case 403:
-        throw ProfileException(
+        throw const ProfileException(
           message: 'No tienes permisos para esta accion.',
           code: 'FORBIDDEN',
         );

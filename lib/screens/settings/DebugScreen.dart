@@ -43,7 +43,7 @@ class DebugScreen extends StatelessWidget {
           children: [
             Text(
               'Danger Zone'.i18n,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.red,

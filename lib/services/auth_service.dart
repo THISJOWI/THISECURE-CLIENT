@@ -46,7 +46,7 @@ class AuthService extends BaseService {
           code: 'FORBIDDEN',
         );
       case 404:
-        throw AuthException(
+        throw const AuthException(
           message: 'Recurso no encontrado',
           code: 'NOT_FOUND',
         );

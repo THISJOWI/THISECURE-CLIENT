@@ -171,7 +171,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: widget.onBack ?? () => Navigator.of(context).pop(),
         ),
       ),
@@ -242,7 +242,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                             ),
                           ],
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.mark_email_unread_outlined,
                           size: 60,
                           color: Colors.white,
@@ -252,7 +252,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       
                       Text(
                         'Verify your email'.i18n,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -293,7 +293,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                   controller: _codeController,
                                   keyboardType: TextInputType.number,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 28,
                                     letterSpacing: 12,

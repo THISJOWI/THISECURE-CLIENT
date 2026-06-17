@@ -47,7 +47,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
         surfaceTintColor: cs.surfaceTint,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.dark,
@@ -177,7 +177,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
         surfaceTintColor: cs.surfaceTint,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.light,

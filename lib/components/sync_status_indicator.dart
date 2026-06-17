@@ -126,7 +126,7 @@ class _SyncStatusBannerState extends State<SyncStatusBanner> {
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.cloud_off,
             size: 18,
             color: Colors.orange,
@@ -188,11 +188,11 @@ class SyncNotification {
   static void showOfflineMode(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Row(
+        content: const Row(
           children: [
-            const Icon(Icons.cloud_off, color: Colors.orange, size: 20),
-            const SizedBox(width: 8),
-            const Text('Working offline'),
+            Icon(Icons.cloud_off, color: Colors.orange, size: 20),
+            SizedBox(width: 8),
+            Text('Working offline'),
           ],
         ),
         duration: const Duration(seconds: 2),
@@ -204,11 +204,11 @@ class SyncNotification {
   static void showBackOnline(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Row(
+        content: const Row(
           children: [
-            const Icon(Icons.cloud_done, color: Colors.green, size: 20),
-            const SizedBox(width: 8),
-            const Text('Back online - syncing...'),
+            Icon(Icons.cloud_done, color: Colors.green, size: 20),
+            SizedBox(width: 8),
+            Text('Back online - syncing...'),
           ],
         ),
         duration: const Duration(seconds: 2),

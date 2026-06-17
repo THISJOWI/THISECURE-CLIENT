@@ -215,7 +215,7 @@ class _SavePasswordDialogState extends State<SavePasswordDialog> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             'THISECURE can save this password for you'.i18n,
                             style: TextStyle(
@@ -357,7 +357,7 @@ class _SavePasswordDialogState extends State<SavePasswordDialog> {
                             )
                           : Text(
                               'Save'.i18n,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),

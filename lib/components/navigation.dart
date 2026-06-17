@@ -307,7 +307,7 @@ class _DesktopLayout extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Text(
                     'v1.0.2'.i18n,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white38,
                       fontSize: 12,
                     ),

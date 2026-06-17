@@ -11,9 +11,6 @@ import 'package:thisjowi/utils/DialogUtils.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
-import 'package:thisjowi/data/models/password_entry.dart';
-import 'package:thisjowi/data/models/note_entry.dart';
-import 'package:thisjowi/data/models/otp_entry.dart';
 
 class GlobalActions {
   static Future<void> createPassword(BuildContext context,

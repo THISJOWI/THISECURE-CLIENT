@@ -166,7 +166,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -247,7 +247,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
 
                          Text(
                           _isVerified ? 'Set New Password'.i18n : 'Verification Code'.i18n,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -288,7 +288,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
                                     children: [
                                       TextField(
                                         controller: _codeController,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 28,
                                           letterSpacing: 12,
@@ -395,7 +395,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
                                     children: [
                                       TextField(
                                         controller: _newPasswordController,
-                                        style: TextStyle(color: Colors.white),
+                                        style: const TextStyle(color: Colors.white),
                                         obscureText: _obscurePassword,
                                         decoration: InputDecoration(
                                           labelText: 'New Password'.i18n,
@@ -425,7 +425,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
                                       const SizedBox(height: 20),
                                       TextField(
                                         controller: _confirmPasswordController,
-                                        style: TextStyle(color: Colors.white),
+                                        style: const TextStyle(color: Colors.white),
                                         obscureText: _obscurePassword,
                                         decoration: InputDecoration(
                                           labelText: 'Confirm Password'.i18n,

@@ -341,7 +341,7 @@ _passwordsRepository = PasswordsRepository();
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: Text('Close'.i18n,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                   ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:thisjowi/core/api.dart';
@@ -365,7 +364,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
               context,
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               borderRadius: 16,
             ),
           ),
@@ -567,7 +566,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ],
                 ),
                 context,
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 borderRadius: 16,
               ),
             ),
@@ -783,7 +782,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ],
                 ),
                 context,
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 borderRadius: 16,
               ),
             ),
@@ -952,7 +951,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             ),
             context,
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
           ),
         ),
       ),
@@ -1084,7 +1083,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             ),
             context,
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
           ),
         ),
         ),

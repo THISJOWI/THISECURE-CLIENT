@@ -79,7 +79,7 @@ class OtpService {
     final cleaned = input.toUpperCase().replaceAll(RegExp(r'[\s=-]'), '');
     
     if (cleaned.isEmpty) {
-      throw FormatException('Empty Base32 string');
+      throw const FormatException('Empty Base32 string');
     }
     
     // Validate characters

@@ -73,7 +73,7 @@ class MicrosoftAuthService extends BaseService {
             details: error,
           );
         }
-        throw AuthException(
+        throw const AuthException(
           message: 'No se recibio el token de autenticacion',
           code: 'NO_TOKEN',
         );
