@@ -4,6 +4,7 @@ import 'package:thisjowi/components/liquid_glass.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/services/passkeyService.dart';
 import 'package:thisjowi/services/passkey_ceremony_service.dart';
+import 'package:thisjowi/services/passkey_error_mapper.dart';
 
 class RegisterPasskeyScreen extends StatefulWidget {
   final PasskeyService passkeyService;
@@ -58,7 +59,8 @@ class _RegisterPasskeyScreenState extends State<RegisterPasskeyScreen> {
       if (e.toString().toLowerCase().contains('cancel')) {
         ErrorSnackBar.showInfo(context, 'Registration cancelled'.i18n);
       } else {
-        ErrorSnackBar.show(context, e.toString());
+        final friendly = PasskeyErrorMapper.map(e);
+        ErrorSnackBar.show(context, friendly ?? e.toString());
       }
     } finally {
       if (mounted) setState(() => _busy = false);

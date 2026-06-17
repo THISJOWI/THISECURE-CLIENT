@@ -2342,6 +2342,14 @@ extension Localization on String {
   {
     "en": "Never",
     "es": "Nunca",
+  } +
+  {
+    "en": "App not associated with the server domain. The administrator must host an Apple App Site Association file at https://%s/.well-known/apple-app-site-association",
+    "es": "La app no está asociada al dominio del servidor. El administrador debe hospedar un archivo Apple App Site Association en https://%s/.well-known/apple-app-site-association",
+  } +
+  {
+    "en": "Missing or invalid AASA file on the server",
+    "es": "Falta o es inválido el archivo AASA en el servidor",
   };
 
 
