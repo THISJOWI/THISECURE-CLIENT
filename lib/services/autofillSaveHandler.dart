@@ -15,17 +15,15 @@ class AutofillSaveHandler {
   final AutofillService _autofillService = AutofillService();
   Timer? _checkTimer;
   bool _isChecking = false;
+  bool _hasProcessedRequest = false;
 
   /// Start monitoring for autofill save requests
-  /// This should be called when the app starts
   void startMonitoring(BuildContext context) {
-    // Check immediately
     _checkForPendingRequest(context);
 
-    // Then check periodically (every 500ms) while app is active
     _checkTimer?.cancel();
-    _checkTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
-      if (!_isChecking) {
+    _checkTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!_isChecking && !_hasProcessedRequest) {
         _checkForPendingRequest(context);
       }
     });
@@ -47,6 +45,7 @@ class AutofillSaveHandler {
       final request = await _autofillService.getPendingAutofillRequest();
 
       if (request != null && request.isSaveRequest) {
+        _hasProcessedRequest = true;
         // We have a save request - show the dialog
         if (context.mounted) {
           _showSavePasswordDialog(
