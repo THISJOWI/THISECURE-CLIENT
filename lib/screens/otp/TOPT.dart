@@ -23,6 +23,8 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
   final OtpService _otpService = OtpService();
   late OtpProvider _otpProvider;
   VoidCallback? _syncListener;
+  Timer? _globalTickTimer;
+  final ValueNotifier<int> _tickNotifier = ValueNotifier(0);
 
   @override
   void initState() {
@@ -30,6 +32,10 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     _otpProvider = context.read<OtpProvider>();
+
+    _globalTickTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _tickNotifier.value++;
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadOtpData();
@@ -47,9 +53,7 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
         }
       };
       syncProvider.addListener(_syncListener!);
-    } catch (_) {
-      // SyncProvider might not be available in tests
-    }
+    } catch (_) {}
   }
 
   @override
@@ -60,9 +64,7 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
       try {
         _listenToSyncEvents();
         _otpProvider.startAutoRefresh();
-      } catch (e) {
-        // Widget may have been deactivated
-      }
+      } catch (e) {}
     } else if (state == AppLifecycleState.paused && mounted) {
       try {
         if (_syncListener != null) {
@@ -70,9 +72,7 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
           _syncListener = null;
         }
         _otpProvider.stopAutoRefresh();
-      } catch (e) {
-        // Widget may have been deactivated
-      }
+      } catch (e) {}
     }
   }
 
@@ -80,14 +80,14 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
     if (mounted) {
       try {
         _otpProvider.loadEntries();
-      } catch (e) {
-        // Widget may have been deactivated
-      }
+      } catch (e) {}
     }
   }
 
   @override
   void dispose() {
+    _globalTickTimer?.cancel();
+    _tickNotifier.dispose();
     WidgetsBinding.instance.removeObserver(this);
     if (_syncListener != null) {
       try {
@@ -101,7 +101,6 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
 
   void _copyCode(OtpEntry entry) {
     if (!mounted) return;
-
     try {
       final code = _otpService.generateTotp(
         secret: entry.secret,
@@ -109,22 +108,16 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
         period: entry.period,
         algorithm: entry.algorithm,
       );
-
       Clipboard.setData(ClipboardData(text: code));
-
       if (!mounted) return;
       try {
         ErrorSnackBar.showSuccess(context, 'Code copied'.i18n);
-      } catch (e) {
-        // Widget may have been deactivated
-      }
+      } catch (e) {}
     } catch (e) {
       if (!mounted) return;
       try {
         ErrorSnackBar.show(context, 'Invalid secret key'.i18n);
-      } catch (e) {
-        // Widget may have been deactivated
-      }
+      } catch (e) {}
     }
   }
 
@@ -132,9 +125,7 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
     if (!mounted) return;
     try {
       await _otpProvider.loadEntries();
-    } catch (e) {
-      // Widget may have been deactivated
-    }
+    } catch (e) {}
   }
 
   Future<void> _deleteEntry(OtpEntry entry) async {
@@ -154,31 +145,31 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
           ),
           title: Text('Delete OTP?'.i18n,
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
-        content: Text(
-          'Are you sure you want to delete "${entry.issuer.isNotEmpty ? entry.issuer : entry.name}"?',
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          content: Text(
+            'Are you sure you want to delete "${entry.issuer.isNotEmpty ? entry.issuer : entry.name}"?',
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, false),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.withValues(alpha: 0.8),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: Text('Cancel'.i18n),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: Text('Delete'.i18n),
+            ),
+          ],
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, false),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.withValues(alpha: 0.8),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-            child: Text('Cancel'.i18n),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-            child: Text('Delete'.i18n),
-          ),
-        ],
-      ),
       ),
     );
 
@@ -187,23 +178,19 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
         entry.id,
         serverId: entry.serverId,
       );
-
       if (!mounted) return;
-
       try {
         if (success) {
           ErrorSnackBar.showSuccess(context, 'OTP deleted'.i18n);
         } else {
           ErrorSnackBar.show(context, _otpProvider.errorMessage);
         }
-      } catch (e) {
-        // Widget may have been deactivated
-      }
-}
-}
+      } catch (e) {}
+    }
+  }
 
-@override
-Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -216,15 +203,16 @@ Widget build(BuildContext context) {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Consumer<OtpProvider>(
-          builder: (context, otpProvider, _) {
+        body: ListenableBuilder(
+          listenable: Listenable.merge([_otpProvider, _tickNotifier]),
+          builder: (context, _) {
+            final otpProvider = _otpProvider;
             return Stack(
               children: [
                 Container(color: Theme.of(context).scaffoldBackgroundColor),
                 SafeArea(
                   child: Column(
                     children: [
-                      // Header
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                         child: Row(
@@ -243,8 +231,6 @@ Widget build(BuildContext context) {
                           ],
                         ),
                       ),
-
-                      // Search bar
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 16.0),
@@ -254,25 +240,26 @@ Widget build(BuildContext context) {
                             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: (Theme.of(context).brightness == Brightness.light ? const Color(0xFFF5F5F5) : const Color(0xFF2A2A2A)),
+                                color: (Theme.of(context).brightness == Brightness.light
+                                    ? const Color(0xFFF5F5F5)
+                                    : const Color(0xFF2A2A2A)),
                                 borderRadius: BorderRadius.circular(25),
                               ),
                               child: TextField(
-                            onChanged: (value) {
-                              otpProvider.setSearchQuery(value);
-                            },
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
-                            decoration: InputDecoration(
-                              hintText: 'Search'.i18n,
-                              hintStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                                  fontSize: 16),
-                              prefixIcon: Icon(Icons.search,
-                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                  size: 22),
-                              suffixIcon:
-                                  otpProvider.searchQuery.isNotEmpty
+                                onChanged: (value) {
+                                  otpProvider.setSearchQuery(value);
+                                },
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
+                                decoration: InputDecoration(
+                                  hintText: 'Search'.i18n,
+                                  hintStyle: TextStyle(
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                      fontSize: 16),
+                                  prefixIcon: Icon(Icons.search,
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                      size: 22),
+                                  suffixIcon: otpProvider.searchQuery.isNotEmpty
                                       ? IconButton(
                                           icon: Icon(Icons.close,
                                               color: Theme.of(context).colorScheme.onSurface
@@ -283,19 +270,17 @@ Widget build(BuildContext context) {
                                           },
                                         )
                                       : null,
-                              border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 14),
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 14),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-
-                      // List
                       Expanded(
                         child: otpProvider.isLoading
                             ? Center(
@@ -318,6 +303,7 @@ Widget build(BuildContext context) {
                                             otpProvider.filteredEntries[index]),
                                         onDelete: () => _deleteEntry(
                                             otpProvider.filteredEntries[index]),
+                                        tick: _tickNotifier.value,
                                       ),
                                     ),
                                   ),
@@ -325,8 +311,6 @@ Widget build(BuildContext context) {
                     ],
                   ),
                 ),
-
-                // FAB
                 Positioned(
                   bottom: 130.0,
                   right: 16.0,
@@ -379,77 +363,26 @@ Widget build(BuildContext context) {
   }
 }
 
-/// Widget individual para cada tarjeta OTP con su propio timer
-class _OtpCard extends StatefulWidget {
+class _OtpCard extends StatelessWidget {
   final OtpEntry entry;
   final VoidCallback onCopy;
   final VoidCallback onDelete;
+  final int tick;
 
   const _OtpCard({
     required this.entry,
     required this.onCopy,
     required this.onDelete,
+    required this.tick,
   });
 
-  @override
-  State<_OtpCard> createState() => _OtpCardState();
-}
-
-class _OtpCardState extends State<_OtpCard>
-    with SingleTickerProviderStateMixin {
-  final OtpService _otpService = OtpService();
-  Timer? _timer;
-  String _code = '';
-  double _progress = 0;
-  int _remainingSeconds = 30;
-  bool _isValidSecret = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _generateCode();
-    _startTimer();
+  int get _remainingSeconds {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    return entry.period - (now % entry.period);
   }
 
-  void _generateCode() {
-    try {
-      _code = _otpService.generateTotp(
-        secret: widget.entry.secret,
-        digits: widget.entry.digits,
-        period: widget.entry.period,
-        algorithm: widget.entry.algorithm,
-      );
-      _isValidSecret = true;
-    } catch (e) {
-      _code = 'INVALID';
-      _isValidSecret = false;
-    }
-    _updateProgress();
-  }
-
-  void _updateProgress() {
-    _remainingSeconds =
-        _otpService.getRemainingSeconds(period: widget.entry.period);
-    _progress = _otpService.getProgress(period: widget.entry.period);
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) {
-        setState(() {
-          _updateProgress();
-          if (_remainingSeconds == widget.entry.period - 1) {
-            _generateCode();
-          }
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  double get _progress {
+    return (entry.period - _remainingSeconds) / entry.period;
   }
 
   Color get _progressColor {
@@ -462,23 +395,31 @@ class _OtpCardState extends State<_OtpCard>
     }
   }
 
-  String get _formattedCode {
-    if (_code.length == 6) {
-      return '${_code.substring(0, 3)} ${_code.substring(3, 6)}';
-    }
-    return _code;
-  }
-
   String get _initial {
-    final text = widget.entry.issuer.isNotEmpty
-        ? widget.entry.issuer
-        : widget.entry.name;
+    final text = entry.issuer.isNotEmpty ? entry.issuer : entry.name;
     return text.isNotEmpty ? text.substring(0, 1).toUpperCase() : '?';
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isValidSecret) {
+    String code;
+    try {
+      final service = OtpService();
+      code = service.generateTotp(
+        secret: entry.secret,
+        digits: entry.digits,
+        period: entry.period,
+        algorithm: entry.algorithm,
+      );
+    } catch (_) {
+      code = 'INVALID';
+    }
+    final isValid = code != 'INVALID';
+    final formattedCode = isValid && code.length == 6
+        ? '${code.substring(0, 3)} ${code.substring(3, 6)}'
+        : code;
+
+    if (!isValid) {
       return Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
@@ -498,11 +439,7 @@ class _OtpCardState extends State<_OtpCard>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 24,
-                  ),
+                  child: Icon(Icons.error_outline, color: Colors.red, size: 24),
                 ),
               ),
               const SizedBox(width: 12),
@@ -529,7 +466,7 @@ class _OtpCardState extends State<_OtpCard>
                 ),
               ),
               IconButton(
-                onPressed: widget.onDelete,
+                onPressed: onDelete,
                 icon: Icon(
                   Icons.delete_outline,
                   color: Colors.red.withValues(alpha: 0.5),
@@ -546,144 +483,142 @@ class _OtpCardState extends State<_OtpCard>
       margin: const EdgeInsets.only(bottom: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF2A2A2A)).withValues(alpha: 0.85),
+        child: Container(
+          decoration: BoxDecoration(
+            color: (Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : const Color(0xFF2A2A2A))
+                .withValues(alpha: 0.85),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onCopy,
               borderRadius: BorderRadius.circular(16),
-            ),
-            child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.onCopy,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          _initial,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.entry.issuer.isNotEmpty
-                                ? widget.entry.issuer
-                                : widget.entry.name,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          if (widget.entry.issuer.isNotEmpty)
-                            Text(
-                              widget.entry.name,
+                          child: Center(
+                            child: Text(
+                              _initial,
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                                fontSize: 13,
+                                color: Theme.of(context).colorScheme.primary,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: widget.onDelete,
-                      icon: Icon(
-                        Icons.delete_outline,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                        size: 20,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _formattedCode,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 4,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                    ),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator(
-                            value: _progress,
-                            strokeWidth: 3,
-                            backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-                            valueColor: AlwaysStoppedAnimation<Color>(_progressColor),
                           ),
                         ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                entry.issuer.isNotEmpty ? entry.issuer : entry.name,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              if (entry.issuer.isNotEmpty)
+                                Text(
+                                  entry.name,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: onDelete,
+                          icon: Icon(
+                            Icons.delete_outline,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            formattedCode,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 4,
+                              fontFamily: 'monospace',
+                            ),
+                          ),
+                        ),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: CircularProgressIndicator(
+                                value: _progress,
+                                strokeWidth: 3,
+                                backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                                valueColor: AlwaysStoppedAnimation<Color>(_progressColor),
+                              ),
+                            ),
+                            Text(
+                              '$_remainingSeconds',
+                              style: TextStyle(
+                                color: _progressColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.touch_app,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                        ),
+                        const SizedBox(width: 4),
                         Text(
-                          '$_remainingSeconds',
+                          'Tap to copy'.i18n,
                           style: TextStyle(
-                            color: _progressColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                            fontSize: 12,
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.touch_app,
-                      size: 14,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Tap to copy'.i18n,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-      ),
         ),
       ),
     );

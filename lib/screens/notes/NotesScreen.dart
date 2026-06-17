@@ -26,6 +26,7 @@ class _NotesScreenState extends State<NotesScreen> {
   bool _isLoading = true;
   String _searchQuery = '';
   VoidCallback? _syncListener;
+  final Map<String, String> _previewCache = {};
 
   @override
   void initState() {
@@ -64,6 +65,10 @@ class _NotesScreenState extends State<NotesScreen> {
 
       if (result['success'] == true) {
         final notes = result['data'] as List<Note>? ?? [];
+        _previewCache.clear();
+        for (final note in notes) {
+          _previewCache[note.localId ?? note.id.toString()] = _computePreview(note.content);
+        }
         if (mounted) {
           setState(() {
             _notes = notes;
@@ -251,17 +256,20 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  String _getPreviewText(String content) {
+  String _computePreview(String content) {
     try {
       if (content.isEmpty) return 'No Content'.i18n;
-      // Intenta decodificar JSON Delta
       final json = jsonDecode(content);
       final doc = Document.fromJson(json);
       return doc.toPlainText().replaceAll('\n', ' ').trim();
     } catch (e) {
-      // Si falla, es texto plano legacy
       return content.replaceAll('\n', ' ').trim();
     }
+  }
+
+  String _getPreviewText(Note note) {
+    return _previewCache[note.localId ?? note.id.toString()]
+        ?? _computePreview(note.content);
   }
 
   @override
@@ -443,7 +451,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                         // SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
-                                            _getPreviewText(note.content),
+                                            _getPreviewText(note),
                                             style: TextStyle(
                                               color: Theme.of(context).colorScheme.onSurface
                                                   .withValues(alpha: 0.6),

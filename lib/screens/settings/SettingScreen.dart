@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:thisjowi/core/api.dart';
 import 'package:thisjowi/core/exceptions/account_exceptions.dart';
 import 'package:thisjowi/core/exceptions/profile_exceptions.dart';
 import 'package:thisjowi/services/auth_service.dart';
@@ -1263,8 +1262,10 @@ class _SettingScreenState extends State<SettingScreen> {
 
                 // Profile Section
                 ProfileCard(
-                  authService: _authService,
-                  profileService: _profileService,
+                  currentAuthUser: _currentAuthUser,
+                  currentProfile: _currentProfile,
+                  avatarCacheBuster: _avatarCacheBuster,
+                  onAvatarTap: _showAvatarOptions,
                 ),
 
                 // Settings List

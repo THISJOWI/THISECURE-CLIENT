@@ -22,6 +22,7 @@ import 'package:thisjowi/services/autofillService.dart';
 import 'package:thisjowi/screens/home/components/password_item.dart';
 import 'package:thisjowi/screens/home/components/note_item.dart';
 import 'package:thisjowi/screens/home/components/empty_state.dart';
+import 'package:thisjowi/components/animations/animated_widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -715,9 +716,7 @@ SafeArea(
                 // Content
                 Expanded(
                   child: _isLoading
-                      ? Center(
-                          child:
-                              CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface))
+                      ? _buildSkeletonList()
                       : RefreshIndicator(
                           onRefresh: _loadData,
                           color: Theme.of(context).colorScheme.onSurface,
@@ -869,6 +868,192 @@ SafeArea(
         if (edited == true) _loadData();
       },
       onDelete: () => _deleteNote(note),
+    );
+  }
+
+  Widget _buildSkeletonList() {
+    final color = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08);
+
+    Widget skeletonPasswordItem() {
+      return ShimmerAnimation(
+        shimmerColor: Theme.of(context).colorScheme.onSurface,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: (Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : const Color(0xFF2A2A2A))
+                      .withValues(alpha: 0.85),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            width: 80,
+                            height: 13,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget skeletonNoteItem() {
+      return ShimmerAnimation(
+        shimmerColor: Theme.of(context).colorScheme.onSurface,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: (Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : const Color(0xFF2A2A2A))
+                      .withValues(alpha: 0.85),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 140,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            width: 100,
+                            height: 13,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget skeletonSectionHeader() {
+      return ShimmerAnimation(
+        shimmerColor: Theme.of(context).colorScheme.onSurface,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Row(
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                width: 80,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                width: 24,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 150),
+      children: [
+        skeletonSectionHeader(),
+        ...List.generate(4, (_) => skeletonPasswordItem()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          child: Divider(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+            thickness: 1,
+          ),
+        ),
+        skeletonSectionHeader(),
+        ...List.generate(4, (_) => skeletonNoteItem()),
+      ],
     );
   }
 

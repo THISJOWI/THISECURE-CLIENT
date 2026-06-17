@@ -13,8 +13,10 @@ class OtpProvider extends ChangeNotifier {
   Timer? _autoRefreshTimer;
   Timer? _searchDebounceTimer;
 
+  List<OtpEntry>? _filteredCache;
+  bool _filterDirty = true;
+
   OtpProvider() {
-    
     _repository = OtpRepository();
   }
 
@@ -23,28 +25,35 @@ class OtpProvider extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   String get searchQuery => _searchQuery;
 
-  // Get filtered entries based on search query
   List<OtpEntry> get filteredEntries {
-    if (_searchQuery.isEmpty) {
-      return _entries;
+    if (_filterDirty) {
+      if (_searchQuery.isEmpty) {
+        _filteredCache = _entries;
+      } else {
+        final query = _searchQuery.toLowerCase();
+        _filteredCache = _entries.where((e) =>
+            e.name.toLowerCase().contains(query) ||
+            e.issuer.toLowerCase().contains(query)).toList();
+      }
+      _filterDirty = false;
     }
-    return _entries.where((e) =>
-        e.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        e.issuer.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+    return _filteredCache!;
   }
 
-  /// Load all OTP entries from the repository
+  void _markDirty() {
+    _filterDirty = true;
+    _filteredCache = null;
+  }
+
   Future<void> loadEntries() async {
     _isLoading = true;
     _errorMessage = '';
-    notifyListeners();
+    _markDirty();
 
     final result = await _repository.getAllOtpEntries();
 
     if (result['success'] == true) {
       var entries = result['data'] as List<OtpEntry>? ?? [];
-
-      // Deduplicate entries based on secret to prevent UI duplicates
       final seenSecrets = <String>{};
       final uniqueEntries = <OtpEntry>[];
       for (final entry in entries) {
@@ -53,42 +62,38 @@ class OtpProvider extends ChangeNotifier {
           uniqueEntries.add(entry);
         }
       }
-
       _entries = uniqueEntries;
-      _isLoading = false;
     } else {
       _entries = [];
       _errorMessage = result['message'] ?? 'Error loading OTP entries';
-      _isLoading = false;
     }
 
+    _isLoading = false;
     notifyListeners();
   }
 
-  /// Add a new OTP entry
   Future<bool> addOtpEntry(Map<String, dynamic> entryData) async {
     final result = await _repository.addOtpEntry(entryData);
 
     if (result['success'] == true) {
-      // Add the new entry to the list immediately for instant UI update
       final newEntry = result['data'] as OtpEntry;
       _entries.add(newEntry);
       _errorMessage = '';
+      _markDirty();
       notifyListeners();
       return true;
     } else {
       _errorMessage = result['message'] ?? 'Failed to add OTP entry';
+      _markDirty();
       notifyListeners();
       return false;
     }
   }
 
-  /// Add OTP from URI (otpauth://...)
   Future<bool> addOtpFromUri(String uri) async {
     final result = await _repository.addOtpFromUri(uri, '');
 
     if (result['success'] == true) {
-      // Reload entries to ensure consistency
       await loadEntries();
       _errorMessage = '';
       return true;
@@ -99,13 +104,13 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  /// Delete an OTP entry
   Future<bool> deleteOtpEntry(String id, {String? serverId}) async {
     final result = await _repository.deleteOtpEntry(id, serverId: serverId);
 
     if (result['success'] == true) {
       _entries.removeWhere((e) => e.id == id);
       _errorMessage = '';
+      _markDirty();
       notifyListeners();
       return true;
     } else {
@@ -115,24 +120,22 @@ class OtpProvider extends ChangeNotifier {
     }
   }
 
-  /// Update search query and filter entries with debounce
   void setSearchQuery(String query) {
     _searchDebounceTimer?.cancel();
     _searchDebounceTimer = Timer(const Duration(milliseconds: 300), () {
       _searchQuery = query;
+      _markDirty();
       notifyListeners();
     });
   }
 
-  /// Clear search query
   void clearSearch() {
     _searchDebounceTimer?.cancel();
     _searchQuery = '';
+    _markDirty();
     notifyListeners();
   }
 
-  /// Silent refresh triggered by SSE sync events.
-  /// Unlike [loadEntries], this does not show a loading spinner.
   Future<void> silentRefresh() async {
     if (_isLoading) return;
     final result = await _repository.getAllOtpEntries();
@@ -148,14 +151,12 @@ class OtpProvider extends ChangeNotifier {
       }
       if (_entriesChanged(uniqueEntries)) {
         _entries = uniqueEntries;
+        _markDirty();
         notifyListeners();
       }
     }
   }
 
-  /// Start auto-refresh of OTP entries (fallback when SSE is not connected).
-  /// The 3s polling is kept for backward compatibility when real-time sync
-  /// is unavailable, but the interval is increased to 30s to reduce overhead.
   void startAutoRefresh({Duration refreshInterval = const Duration(seconds: 30)}) {
     if (_autoRefreshTimer != null && _autoRefreshTimer!.isActive) {
       return;
@@ -167,16 +168,13 @@ class OtpProvider extends ChangeNotifier {
     });
   }
 
-  /// Stop auto-refresh of OTP entries
   void stopAutoRefresh() {
     _autoRefreshTimer?.cancel();
     _autoRefreshTimer = null;
   }
 
-  /// Check if entries have changed
   bool _entriesChanged(List<OtpEntry> newEntries) {
     if (_entries.length != newEntries.length) return true;
-    
     for (int i = 0; i < _entries.length; i++) {
       if (_entries[i].id != newEntries[i].id || 
           _entries[i].secret != newEntries[i].secret) {
