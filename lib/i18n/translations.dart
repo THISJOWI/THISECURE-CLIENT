@@ -2273,10 +2273,77 @@ extension Localization on String {
   "en": "Readable text format",
   "es": "Formato de texto legible",
 } +
-{
-  "en": "Select a CSV, JSON, or Markdown file",
-  "es": "Selecciona un archivo CSV, JSON o Markdown",
-};
+  {
+    "en": "Select a CSV, JSON, or Markdown file",
+    "es": "Selecciona un archivo CSV, JSON o Markdown",
+  } +
+
+  // ==================== PASSKEYS ====================
+  {
+    "en": "Passkeys",
+    "es": "Passkeys",
+  } +
+  {
+    "en": "Add passkey",
+    "es": "Añadir passkey",
+  } +
+  {
+    "en": "Register passkey",
+    "es": "Registrar passkey",
+  } +
+  {
+    "en": "Delete passkey?",
+    "es": "¿Eliminar passkey?",
+  } +
+  {
+    "en": "No passkeys yet",
+    "es": "Aún no hay passkeys",
+  } +
+  {
+    "en": "Use %s to create this passkey",
+    "es": "Usa %s para crear este passkey",
+  } +
+  {
+    "en": "Passkey created",
+    "es": "Passkey creada",
+  } +
+  {
+    "en": "Passkey deleted",
+    "es": "Passkey eliminada",
+  } +
+  {
+    "en": "Passkey creation failed",
+    "es": "Error al crear la passkey",
+  } +
+  {
+    "en": "Registration cancelled",
+    "es": "Registro cancelado",
+  } +
+  {
+    "en": "Passkey name",
+    "es": "Nombre de la passkey",
+  } +
+  {
+    "en": "Add your first passkey to sign in faster",
+    "es": "Añade tu primera passkey para iniciar sesión más rápido",
+  } +
+  {
+    "en": "Backup",
+    "es": "Respaldo",
+  } +
+  {
+    "en": "Last used",
+    "es": "Último uso",
+  } +
+  {
+    "en": "Relying party",
+    "es": "Parte confiante",
+  } +
+  {
+    "en": "Never",
+    "es": "Nunca",
+  };
+
 
 
 
