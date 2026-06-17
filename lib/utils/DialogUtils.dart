@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:thisjowi/i18n/translations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thisjowi/data/models/user.dart';
 import 'package:thisjowi/data/models/message.dart';

@@ -1227,6 +1227,7 @@ class _SettingScreenState extends State<SettingScreen> {
       context.read<SyncProvider>().removeListener(_onSyncProviderChanged);
     } catch (_) {}
 
+    _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();

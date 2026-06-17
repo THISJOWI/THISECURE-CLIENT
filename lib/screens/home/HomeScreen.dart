@@ -18,21 +18,8 @@ import 'package:thisjowi/utils/GlobalActions.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:thisjowi/components/search_debounce.dart';
 import 'package:thisjowi/services/autofillService.dart';
-
-/// Debounce helper for search queries
-class _SearchDebounce {
-  Timer? _timer;
-
-  void debounce(VoidCallback action, {Duration delay = const Duration(milliseconds: 300)}) {
-    _timer?.cancel();
-    _timer = Timer(delay, action);
-  }
-
-  void dispose() {
-    _timer?.cancel();
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,7 +31,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final PasswordsRepository _passwordsRepository;
   late final NotesRepository _notesRepository;
-  final _searchDebounce = _SearchDebounce();
+  final _searchDebounce = SearchDebounce();
 
   List<PasswordEntry> _passwords = [];
   List<Note> _notes = [];

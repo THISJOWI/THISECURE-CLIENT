@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:thisjowi/i18n/translations.dart';
 import '../data/models/user.dart';
 
 /// Widget para mostrar información de usuario LDAP

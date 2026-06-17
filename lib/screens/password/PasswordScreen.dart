@@ -12,23 +12,9 @@ import 'package:thisjowi/components/liquid_glass.dart';
 import 'package:thisjowi/components/password_generator_dialog.dart';
 import 'package:thisjowi/core/providers/sync_provider.dart';
 import 'package:thisjowi/i18n/translations.dart';
+import 'package:thisjowi/components/search_debounce.dart';
 import 'package:provider/provider.dart';
 import 'EditPasswordScreen.dart';
-
-/// Debounce helper for search queries
-class _SearchDebounce {
-  Timer? _timer;
-
-  void debounce(VoidCallback action,
-      {Duration delay = const Duration(milliseconds: 300)}) {
-    _timer?.cancel();
-    _timer = Timer(delay, action);
-  }
-
-  void dispose() {
-    _timer?.cancel();
-  }
-}
 
 class PasswordScreen extends StatefulWidget {
   const PasswordScreen({super.key});
@@ -39,7 +25,7 @@ class PasswordScreen extends StatefulWidget {
 
 class _PasswordScreenState extends State<PasswordScreen> {
   late final PasswordsRepository _passwordsRepository;
-  final _searchDebounce = _SearchDebounce();
+  final _searchDebounce = SearchDebounce();
   List<PasswordEntry> _passwords = [];
   bool _isLoading = true;
   String _searchQuery = '';
