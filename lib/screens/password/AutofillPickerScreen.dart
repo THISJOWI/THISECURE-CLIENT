@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:thisjowi/core/service_locator.dart';
+import 'package:provider/provider.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
 import 'package:thisjowi/services/autofillService.dart';
@@ -30,8 +30,7 @@ class _AutofillPickerScreenState extends State<AutofillPickerScreen> {
   @override
   void initState() {
     super.initState();
-    final sl = ServiceLocator();
-    _passwordsRepository = sl.passwordsRepository;
+    _passwordsRepository = context.read<PasswordsRepository>();
     // Try to pre-fill search with the app name
     _searchQuery = widget.request.appName;
     _authenticate();

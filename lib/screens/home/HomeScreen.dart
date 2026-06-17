@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:thisjowi/core/service_locator.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
 import 'package:thisjowi/data/models/note_entry.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
@@ -201,9 +200,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _initRepositories() {
-    final sl = ServiceLocator();
-    _passwordsRepository = sl.passwordsRepository;
-    _notesRepository = sl.notesRepository;
+    
+    _passwordsRepository = PasswordsRepository();
+    _notesRepository = NotesRepository();
   }
 
   /// Extrae el texto plano del contenido JSON Delta de una nota

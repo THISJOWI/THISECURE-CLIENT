@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:thisjowi/screens/notes/EditNoteScreen.dart';
-import 'package:thisjowi/core/service_locator.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
+import 'package:thisjowi/data/repository/notes_repository.dart';
 import 'package:thisjowi/components/button.dart';
 import 'package:thisjowi/components/error_bar.dart';
 import 'package:thisjowi/components/liquid_glass.dart';
@@ -35,8 +35,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   void initState() {
     super.initState();
     // Initialize repository from singleton
-    final sl = ServiceLocator();
-    _passwordsRepository = sl.passwordsRepository;
+_passwordsRepository = PasswordsRepository();
     _loadPasswords();
     _listenToSyncEvents();
   }
@@ -382,8 +381,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   }
 
   Future<void> _createNote() async {
-    final sl = ServiceLocator();
-    final notesRepository = sl.notesRepository;
+    final notesRepository = context.read<NotesRepository>();
 
     final created = await Navigator.push<bool>(
       context,

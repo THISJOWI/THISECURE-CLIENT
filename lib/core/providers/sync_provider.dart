@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:thisjowi/core/service_locator.dart';
 import 'package:thisjowi/data/models/sync_event.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
 import 'package:thisjowi/data/repository/otp_repository.dart';
@@ -38,11 +37,11 @@ class SyncProvider extends ChangeNotifier {
 
   SyncProvider() {
     _instance = this;
-    final sl = ServiceLocator();
-    _passwordsRepository = sl.passwordsRepository;
-    _notesRepository = sl.notesRepository;
-    _otpRepository = sl.otpRepository;
-    _profileRepository = sl.profileRepository;
+    
+    _passwordsRepository = PasswordsRepository();
+    _notesRepository = NotesRepository();
+    _otpRepository = OtpRepository();
+    _profileRepository = ProfileRepository();
   }
 
   Future<void> start() async {

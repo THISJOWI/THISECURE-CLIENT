@@ -21,7 +21,8 @@ import 'package:thisjowi/data/models/auth_user.dart';
 import 'package:thisjowi/data/models/profile_user.dart';
 import 'package:thisjowi/screens/settings/LegalDocumentsScreen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:thisjowi/core/service_locator.dart';
+import 'package:thisjowi/data/repository/passwordsRepository.dart';
+import 'package:thisjowi/data/repository/notes_repository.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
 import 'package:thisjowi/data/models/note_entry.dart' as note_models;
 import 'package:thisjowi/components/export_passwords_sheet.dart';
@@ -597,7 +598,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> _handleExportPasswords() async {
-    final result = await ServiceLocator().passwordsRepository.getAllPasswords();
+    final result = await context.read<PasswordsRepository>().getAllPasswords();
     if (!mounted) return;
 
     if (result['success'] == true && result['data'] != null) {
@@ -625,7 +626,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> _handleExportNotes() async {
-    final result = await ServiceLocator().notesRepository.getAllNotes();
+    final result = await context.read<NotesRepository>().getAllNotes();
     if (!mounted) return;
 
     if (result['success'] == true && result['data'] != null) {

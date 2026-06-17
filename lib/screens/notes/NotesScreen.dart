@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:thisjowi/components/error_bar.dart';
-import 'package:thisjowi/core/service_locator.dart';
 import 'package:thisjowi/core/providers/sync_provider.dart';
 import 'package:thisjowi/data/models/note_entry.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
@@ -32,8 +31,8 @@ class _NotesScreenState extends State<NotesScreen> {
   void initState() {
     super.initState();
     // Initialize repository from singleton
-    final sl = ServiceLocator();
-    _notesRepository = sl.notesRepository;
+    
+    _notesRepository = NotesRepository();
     _loadNotes();
     _listenToSyncEvents();
   }

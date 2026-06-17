@@ -17,6 +17,10 @@ import 'package:thisjowi/screens/otp/OtpQrScannerScreen.dart';
 import 'package:thisjowi/screens/splash/splash.dart';
 import 'package:thisjowi/screens/onboarding/onBoarding.dart';
 import 'package:thisjowi/components/privacy_overlay.dart';
+import 'package:thisjowi/data/repository/passwordsRepository.dart';
+import 'package:thisjowi/data/repository/notes_repository.dart';
+import 'package:thisjowi/data/repository/otp_repository.dart';
+import 'package:thisjowi/data/repository/profile_repository.dart';
 import 'package:thisjowi/services/token_manager.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 
@@ -124,10 +128,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => OtpProvider()),
-        ChangeNotifierProvider(create: (_) => SyncProvider()),
-      ],
+          ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          Provider<PasswordsRepository>(create: (_) => PasswordsRepository()),
+          Provider<NotesRepository>(create: (_) => NotesRepository()),
+          Provider<OtpRepository>(create: (_) => OtpRepository()),
+          Provider<ProfileRepository>(create: (_) => ProfileRepository()),
+          ChangeNotifierProvider(create: (_) => OtpProvider()),
+          ChangeNotifierProvider(create: (_) => SyncProvider()),
+        ],
       child: KeyboardEventFix(
         child: Consumer<ThemeProvider>(
           builder: (context, themeProvider, _) {

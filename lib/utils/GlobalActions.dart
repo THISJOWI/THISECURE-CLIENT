@@ -1,8 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thisjowi/core/providers/otp_provider.dart';
-import 'package:thisjowi/core/service_locator.dart';
 import 'package:thisjowi/components/error_bar.dart';
 import 'package:thisjowi/components/liquid_glass.dart';
 import 'package:thisjowi/components/password_generator_dialog.dart';
@@ -11,12 +9,16 @@ import 'package:thisjowi/screens/notes/EditNoteScreen.dart';
 import 'package:thisjowi/screens/otp/OtpQrScannerScreen.dart';
 import 'package:thisjowi/utils/DialogUtils.dart';
 import 'package:thisjowi/i18n/translations.dart';
+import 'package:thisjowi/data/repository/passwordsRepository.dart';
+import 'package:thisjowi/data/repository/notes_repository.dart';
+import 'package:thisjowi/data/models/password_entry.dart';
+import 'package:thisjowi/data/models/note_entry.dart';
+import 'package:thisjowi/data/models/otp_entry.dart';
 
 class GlobalActions {
   static Future<void> createPassword(BuildContext context,
       {VoidCallback? onSuccess}) async {
-    final sl = ServiceLocator();
-    final repository = sl.passwordsRepository;
+    final repository = context.read<PasswordsRepository>();
 
     final titleController = TextEditingController();
     final usernameController = TextEditingController();
@@ -235,8 +237,7 @@ class GlobalActions {
 
   static Future<void> createNote(BuildContext context,
       {VoidCallback? onSuccess}) async {
-    final sl = ServiceLocator();
-    final repository = sl.notesRepository;
+    final repository = context.read<NotesRepository>();
     final created = await Navigator.push<bool>(
       context,
       MaterialPageRoute(

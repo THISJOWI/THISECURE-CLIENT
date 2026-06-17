@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:thisjowi/core/service_locator.dart';
 import 'package:thisjowi/data/models/otp_entry.dart';
 import 'package:thisjowi/data/repository/otp_repository.dart';
 
@@ -15,8 +14,8 @@ class OtpProvider extends ChangeNotifier {
   Timer? _searchDebounceTimer;
 
   OtpProvider() {
-    final sl = ServiceLocator();
-    _repository = sl.otpRepository;
+    
+    _repository = OtpRepository();
   }
 
   List<OtpEntry> get entries => _entries;
