@@ -8,7 +8,8 @@ class BackgroundOrbs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return RepaintBoundary(
+      child: Stack(
       children: [
         // Ambient Background Gradients
         Positioned(
@@ -72,6 +73,7 @@ class BackgroundOrbs extends StatelessWidget {
         // Main Content
         Positioned.fill(child: child),
       ],
+    ),
     );
   }
 }
