@@ -8,6 +8,7 @@ import 'package:thisjowi/core/app_theme.dart';
 import 'package:thisjowi/core/api.dart';
 import 'package:thisjowi/core/env_loader.dart';
 import 'package:thisjowi/core/theme_provider.dart';
+import 'package:thisjowi/core/environment_profile_manager.dart';
 import 'package:thisjowi/core/providers/otp_provider.dart';
 import 'package:thisjowi/core/providers/sync_provider.dart';
 import 'package:thisjowi/screens/auth/login.dart';
@@ -16,6 +17,8 @@ import 'package:thisjowi/screens/auth/authSelection.dart';
 import 'package:thisjowi/screens/otp/OtpQrScannerScreen.dart';
 import 'package:thisjowi/screens/splash/splash.dart';
 import 'package:thisjowi/screens/onboarding/onBoarding.dart';
+import 'package:thisjowi/screens/environments/environment_list_screen.dart';
+import 'package:thisjowi/screens/environments/environment_add_screen.dart';
 import 'package:thisjowi/components/privacy_overlay.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
@@ -100,6 +103,7 @@ void main() async {
 
   await EnvLoader.load();
   await ApiConfig.init();
+  await EnvironmentProfileManager().load();
 
   // Inicializar TokenManager para que cargue el token desde el inicio
   await TokenManager().init();
@@ -129,6 +133,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(create: (_) => EnvironmentProfileManager()),
           Provider<PasswordsRepository>(create: (_) => PasswordsRepository()),
           Provider<NotesRepository>(create: (_) => NotesRepository()),
           Provider<OtpRepository>(create: (_) => OtpRepository()),
@@ -182,6 +187,8 @@ class _AppCore extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/onboarding': (context) => const OnboardingScreen(),
           '/otp/qrscan': (context) => const OtpQrScannerScreen(),
+          '/environments': (context) => const EnvironmentListScreen(),
+          '/environments/add': (context) => const EnvironmentAddScreen(),
         },
         home: const SplashScreen(),
       ),

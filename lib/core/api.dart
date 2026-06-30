@@ -55,6 +55,11 @@ class ApiConfig {
     return '$baseUrl$path';
   }
 
+  /// URL para WebSocket del servicio de mensajería (socket.io)
+  static String get messagesWsUrl {
+    return messagesUrl.replaceFirst('https://', 'wss://').replaceFirst('http://', 'ws://');
+  }
+
   /// Timeout para las peticiones HTTP (en segundos)
   static int get requestTimeout => EnvLoader.getRequiredInt('REQUEST_TIMEOUT');
 

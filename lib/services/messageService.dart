@@ -63,9 +63,9 @@ class MessageService {
                     updatedAt: conv.updatedAt,
                   ));
                   continue;
-                }
               }
-              conversations.add(conv);
+            }
+            conversations.add(conv);
             }
             return {'success': true, 'data': conversations};
           }
@@ -87,8 +87,8 @@ class MessageService {
       }
 
       final url = (conversationId == 'new' && recipientId != null)
-          ? '$baseUrl/between/$recipientId'
-          : '$baseUrl/$conversationId';
+          ? '$baseUrl/conversations/between/$recipientId'
+          : '$baseUrl/conversations/$conversationId';
       final uri = Uri.parse(url);
       final res = await http
           .get(
@@ -99,7 +99,7 @@ class MessageService {
 
       if (res.statusCode == 200) {
         final body = jsonDecode(res.body);
-        final List<dynamic> data = (body is List) ? body : (body['data'] ?? []);
+        final List<dynamic> data = (body is List) ? body : (body['data'] ?? body['messages'] ?? []);
 
         final currentUser = await _authService.getCurrentUser();
         final currentUserId = currentUser?.id;
@@ -144,7 +144,12 @@ class MessageService {
           }
           messages.add(msg);
         }
-        return {'success': true, 'data': messages};
+
+        final result = <String, dynamic>{'success': true, 'data': messages};
+        if (body is Map && body['conversationId'] != null) {
+          result['conversationId'] = body['conversationId'].toString();
+        }
+        return result;
       }
 
       return {'success': false, 'message': 'Failed to load messages'};
@@ -160,7 +165,7 @@ class MessageService {
         return {'success': false, 'message': 'Not authenticated', 'data': []};
       }
 
-      final uri = Uri.parse('$baseUrl/ldap-users/$domain');
+      final uri = Uri.parse('${ApiConfig.baseUrl}/v1/auth/ldap/users?domain=$domain');
       final res = await http
           .get(
             uri,
@@ -168,6 +173,7 @@ class MessageService {
           )
           .timeout(Duration(seconds: ApiConfig.requestTimeout));
 
+      print('📡 getLdapUsers($domain) -> ${res.statusCode}: ${res.body}');
       if (res.statusCode == 200) {
         final body = jsonDecode(res.body);
         if (body is Map) {
@@ -179,7 +185,7 @@ class MessageService {
       }
       return {
         'success': false,
-        'message': 'Failed to load LDAP users',
+        'message': 'Failed to load LDAP users (${res.statusCode})',
         'data': []
       };
     } catch (e) {
@@ -196,21 +202,25 @@ class MessageService {
         return {'success': false, 'message': 'Not authenticated'};
       }
 
+      // For 'new' conversations, create/get the real conversation first
+      String realId = conversationId;
+      if (conversationId == 'new' && recipientId != null) {
+        final betweenResult = await getMessages('new', recipientId: recipientId);
+        if (betweenResult['success'] == true && betweenResult['conversationId'] != null) {
+          realId = betweenResult['conversationId'] as String;
+        } else {
+          return {'success': false, 'message': 'Failed to create conversation'};
+        }
+      }
+
       final user = await _authService.getCurrentUser();
       if (user?.id == null) {
         return {'success': false, 'message': 'User ID not found'};
       }
 
-      final payload = {
-        'senderId': user!.id,
-        'conversationId': conversationId,
-        'content': content,
-        'isEncrypted': false,
-      };
-
+      String textToSend = content;
+      Map<String, String>? encryptedPayload;
       if (recipientId != null) {
-        payload['recipientId'] = recipientId;
-
         // Try E2EE
         print('🔍 Attempting E2EE for recipient: $recipientId');
         final recipientPubKey =
@@ -221,25 +231,27 @@ class MessageService {
           final encryptedData =
               await _cryptoService.encryptMessage(content, recipientPubKey);
           if (encryptedData != null) {
-            payload['content'] = encryptedData['encryptedContent']!;
-            payload['ephemeralPublicKey'] =
-                encryptedData['ephemeralPublicKey']!;
-            payload['isEncrypted'] = true;
+            textToSend = encryptedData['encryptedContent']!;
+            encryptedPayload = {'ephemeralPublicKey': encryptedData['ephemeralPublicKey']!};
             print('🔐 MESSAGE ENCRYPTED SUCCESSFULLY');
           } else {
             print('❌ Encryption algorithm failed, sending cleartext');
           }
         } else {
-          print(
-              '⚠️ No public key found for $recipientId on server. Sending cleartext.');
-          print(
-              '💡 Tip: Recipient needs to log in with the updated app to upload their key.');
+          print('⚠️ No public key found for recipient. Sending cleartext.');
         }
+      }
+
+      final payload = <String, dynamic>{
+        'text': textToSend,
+      };
+      if (encryptedPayload != null) {
+        payload.addAll(encryptedPayload);
       }
 
       final res = await http
           .post(
-            Uri.parse(baseUrl),
+            Uri.parse('$baseUrl/conversations/$realId/messages'),
             headers: ApiConfig.authHeaders(token),
             body: jsonEncode(payload),
           )
@@ -251,8 +263,7 @@ class MessageService {
             (body is Map && body.containsKey('data')) ? body['data'] : body;
         final message = Message.fromJson(msgData);
 
-        // If we sent it encrypted, we know the content we sent was 'content' (decrypted)
-        // The backend returns the encrypted version. Let's return the decrypted version to UI.
+        // If we sent it encrypted, return decrypted content to UI
         if (message.isEncrypted) {
           return {
             'success': true,
@@ -260,7 +271,7 @@ class MessageService {
               id: message.id,
               conversationId: message.conversationId,
               senderId: message.senderId,
-              content: content, // Use original plain text
+              content: content,
               timestamp: message.timestamp,
               isRead: message.isRead,
               isEncrypted: true,
@@ -310,5 +321,16 @@ class MessageService {
     } catch (e) {
       return {'success': false, 'message': e.toString()};
     }
+  }
+
+  Future<void> sendTyping(String conversationId) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) return;
+      await http.post(
+        Uri.parse('$baseUrl/conversations/$conversationId/typing'),
+        headers: ApiConfig.authHeaders(token),
+      );
+    } catch (_) {}
   }
 }

@@ -6,6 +6,7 @@ import 'package:thisjowi/data/repository/notes_repository.dart';
 import 'package:thisjowi/data/repository/otp_repository.dart';
 import 'package:thisjowi/data/repository/passwordsRepository.dart';
 import 'package:thisjowi/data/repository/profile_repository.dart';
+import 'package:thisjowi/services/messaging_socket_service.dart';
 import 'package:thisjowi/services/sync_service.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 
@@ -61,6 +62,7 @@ class SyncProvider extends ChangeNotifier {
     );
 
     await _syncService.connect();
+    MessagingSocketService().connect();
   }
 
   Future<void> stop() async {
@@ -191,6 +193,7 @@ class SyncProvider extends ChangeNotifier {
     _eventSub?.cancel();
     _connectionSub?.cancel();
     _syncService.dispose();
+    MessagingSocketService().dispose();
     super.dispose();
   }
 }

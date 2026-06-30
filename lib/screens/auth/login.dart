@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:thisjowi/core/app_colors.dart';
+import 'package:thisjowi/core/environment_profile_manager.dart';
 import 'package:thisjowi/core/exceptions/auth_exceptions.dart';
+import 'package:thisjowi/data/models/server_info.dart';
 import 'package:thisjowi/services/auth_service.dart';
 import 'package:thisjowi/services/biometricService.dart';
 import 'package:thisjowi/services/google_auth_service.dart';
@@ -13,6 +15,7 @@ import 'package:thisjowi/services/offline_auth_service.dart';
 import 'package:thisjowi/components/social_login_button.dart';
 import 'package:thisjowi/components/navigation.dart';
 import 'package:thisjowi/components/error_bar.dart';
+import 'package:thisjowi/components/environment_mode_chip.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/screens/auth/forgotPassword.dart';
 
@@ -40,11 +43,19 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _biometricAvailable = false;
   String _biometricType = 'Biometric';
   bool _obscurePassword = true;
+  ServerInfo _serverInfo = ServerInfo.empty();
 
   @override
   void initState() {
     super.initState();
     _checkBiometricAvailability();
+    _fetchServerInfo();
+  }
+
+  Future<void> _fetchServerInfo() async {
+    if (!EnvironmentProfileManager().isSelfHosted) return;
+    final info = await _authService.getServerInfo();
+    if (mounted) setState(() => _serverInfo = info);
   }
 
   Future<void> _handleGoogleLogin() async {
@@ -339,6 +350,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 40),
 
+                      // Environment mode toggle
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: EnvironmentModeChip(),
+                        ),
+                      ),
+
                       ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child: BackdropFilter(
@@ -557,89 +576,110 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Social Login Buttons
                       if (!_isLoading)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                                    SocialLoginButton(
-                                imagePath: 'assets/google_logo.png',
-                                color: Colors.red,
-                                onTap: _handleGoogleLogin,
-                              ),
-                            const SizedBox(width: 20),
-                            SocialLoginButton(
-                              imagePath: 'assets/github_logo.png',
-                              color: Colors.black,
-                              onTap: _handleGithubLogin,
-                            ),
-                            const SizedBox(width: 20),
-                            SocialLoginButton(
-                              icon: Icons.window,
-                              color: const Color(0xFF00A4EF),
-                              onTap: _handleMicrosoftLogin,
-                            ),
-                            if (_biometricAvailable) ...[
-                              const SizedBox(width: 20),
-                              GestureDetector(
-                                onTap: _handleBiometricLogin,
-                                child: Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.05)
-                                        : Colors.black.withValues(alpha: 0.05),
-                                    borderRadius: BorderRadius.circular(28),
-                                    border: Border.all(
-                                        color: isDark
-                                            ? Colors.white.withValues(alpha: 0.1)
-                                            : Colors.black.withValues(alpha: 0.1)),
-                                  ),
-                                  child: Icon(
-                                    _biometricType == 'Face ID'
-                                        ? Icons.face_rounded
-                                        : Icons.fingerprint_rounded,
-                                    size: 30,
-                                    color: isDark ? Colors.white : Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
+                        _buildSocialButtons(isDark),
 
                       const SizedBox(height: 30),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account? ".i18n,
-                            style: TextStyle(
-                                color: isDark
-                                    ? AppColors.text.withValues(alpha: 0.6)
-                                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                fontSize: 14),
-                          ),
-                          GestureDetector(
-                            onTap: () => Navigator.pushReplacementNamed(
-                                context, '/register'),
-                            child: Text(
-                              "Sign Up".i18n,
+                      if (!(EnvironmentProfileManager().isSelfHosted && _serverInfo.ldap))
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Don't have an account? ".i18n,
                               style: TextStyle(
-                                color: isDark ? Colors.white : Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                  color: isDark
+                                      ? AppColors.text.withValues(alpha: 0.6)
+                                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                  fontSize: 14),
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.pushReplacementNamed(
+                                  context, '/register'),
+                              child: Text(
+                                "Sign Up".i18n,
+                                style: TextStyle(
+                                  color: isDark ? Colors.white : Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialButtons(bool isDark) {
+    final isSelfHosted = EnvironmentProfileManager().isSelfHosted;
+    final showGoogle = !isSelfHosted || _serverInfo.hasGoogle;
+    final showGithub = !isSelfHosted || _serverInfo.hasGithub;
+    final showMicrosoft = !isSelfHosted || _serverInfo.hasMicrosoft;
+    final hasAny =
+        showGoogle || showGithub || showMicrosoft || _biometricAvailable;
+    if (!hasAny) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (showGoogle)
+            SocialLoginButton(
+              imagePath: 'assets/google_logo.png',
+              color: Colors.red,
+              onTap: _handleGoogleLogin,
+            ),
+          if (showGoogle && (showGithub || showMicrosoft))
+            const SizedBox(width: 20),
+          if (showGithub)
+            SocialLoginButton(
+              imagePath: 'assets/github_logo.png',
+              color: Colors.black,
+              onTap: _handleGithubLogin,
+            ),
+          if (showGithub && showMicrosoft)
+            const SizedBox(width: 20),
+          if (showMicrosoft)
+            SocialLoginButton(
+              icon: Icons.window,
+              color: const Color(0xFF00A4EF),
+              onTap: _handleMicrosoftLogin,
+            ),
+          if (_biometricAvailable) ...[
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: _handleBiometricLogin,
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : Colors.black.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.1)),
+                ),
+                child: Icon(
+                  _biometricType == 'Face ID'
+                      ? Icons.face_rounded
+                      : Icons.fingerprint_rounded,
+                  size: 30,
+                  color: isDark ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

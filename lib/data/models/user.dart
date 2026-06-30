@@ -34,9 +34,9 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     final ldapUsr = json['ldapUsername'] ?? json['ldap_username'];
     return User(
-      id: (json['id'] ?? json['_id'] ?? json['userId'])?.toString(),
+      id: (json['userId'] ?? json['id'] ?? json['_id'])?.toString(),
       email: json['email'] ?? '',
-      fullName: json['fullName'],
+      fullName: json['fullName'] ?? json['name'],
       country: json['country'],
       accountType: json['accountType'] ?? json['account_type'],
       hostingMode: json['hostingMode'] ?? json['hosting_mode'],

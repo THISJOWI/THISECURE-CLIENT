@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:thisjowi/core/api.dart';
+import 'package:thisjowi/core/environment_profile_manager.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/screens/otp/TOPT.dart';
 import 'package:thisjowi/screens/home/HomeScreen.dart';
@@ -30,7 +31,7 @@ class Navigation extends State<MyBottomNavigation>
   final AuthService _authService = AuthService();
   final ProfileService _profileService = ProfileService();
   final AutofillSaveHandler _autofillHandler = AutofillSaveHandler();
-  bool _isBusinessAccount = false;
+  bool _showMessagesTab = false;
   List<Widget> _pages = [];
   List<_NavItem> _navItems = [];
   String? _profilePhotoUrl;
@@ -72,13 +73,17 @@ class Navigation extends State<MyBottomNavigation>
   }
 
   Future<void> _initNavigation() async {
-    final cachedType = await _authService.getCachedAccountType();
-    final user = await _authService.getCurrentUser();
+    final isSelfHosted = EnvironmentProfileManager().isSelfHosted;
+
+    bool isLdapEnabled = false;
+    if (isSelfHosted) {
+      final serverInfo = await _authService.getServerInfo();
+      isLdapEnabled = serverInfo.ldap;
+    }
 
     if (mounted) {
       setState(() {
-        final aspect = user?.accountType ?? cachedType;
-        _isBusinessAccount = aspect?.toLowerCase() == 'business';
+        _showMessagesTab = isSelfHosted && isLdapEnabled;
         _buildPages();
         _buildNavItems();
       });
@@ -137,7 +142,7 @@ class Navigation extends State<MyBottomNavigation>
   void _buildPages() {
     _pages = [
       const HomeScreen(),
-      if (_isBusinessAccount) const MessagesScreen(),
+      if (_showMessagesTab) const MessagesScreen(),
       const OtpScreen(),
       const SettingScreen(),
     ];
@@ -150,7 +155,7 @@ class Navigation extends State<MyBottomNavigation>
         label: 'Home'.i18n,
         index: 0,
       ),
-      if (_isBusinessAccount)
+      if (_showMessagesTab)
         _NavItem(
           icon: Icons.chat_bubble_rounded,
           label: 'Messages'.i18n,
@@ -159,12 +164,12 @@ class Navigation extends State<MyBottomNavigation>
       _NavItem(
         icon: Icons.shield_rounded,
         label: 'OTP'.i18n,
-        index: _isBusinessAccount ? 2 : 1,
+        index: _showMessagesTab ? 2 : 1,
       ),
       _NavItem(
         icon: Icons.settings_rounded,
         label: 'Settings'.i18n,
-        index: _isBusinessAccount ? 3 : 2,
+        index: _showMessagesTab ? 3 : 2,
         isProfileAvatar: true,
       ),
     ];

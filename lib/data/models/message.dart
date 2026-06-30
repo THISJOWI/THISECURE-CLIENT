@@ -24,18 +24,31 @@ class Message {
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
+    final senderId = (json['senderId'] ?? '').toString();
+    final readBy = json['readBy'];
+    bool isRead = json['isRead'] == true;
+    if (!isRead && readBy is List) {
+      isRead = readBy.any((rb) {
+        if (rb is Map) {
+          return rb['userId']?.toString() != senderId;
+        }
+        return false;
+      });
+    }
     return Message(
-      id: json['id'] ?? json['_id'] ?? '',
-      conversationId: json['conversationId'] ?? '',
-      senderId: json['senderId'] ?? '',
-      recipientId: json['recipientId'],
-      content: json['content'] ?? '',
+      id: (json['id'] ?? json['_id'] ?? '').toString(),
+      conversationId: (json['conversationId'] ?? json['conversationId'] ?? '').toString(),
+      senderId: senderId,
+      recipientId: json['recipientId']?.toString(),
+      content: json['text']?.toString() ?? json['content']?.toString() ?? '',
       timestamp: json['timestamp'] != null
-          ? DateTime.parse(json['timestamp'])
-          : DateTime.now(),
-      isRead: json['isRead'] ?? false,
-      isEncrypted: json['isEncrypted'] ?? false,
-      ephemeralPublicKey: json['ephemeralPublicKey'],
+          ? DateTime.parse(json['timestamp'].toString())
+          : json['sentAt'] != null
+              ? DateTime.parse(json['sentAt'].toString())
+              : DateTime.now(),
+      isRead: isRead,
+      isEncrypted: json['isEncrypted'] == true,
+      ephemeralPublicKey: json['ephemeralPublicKey']?.toString(),
     );
   }
 

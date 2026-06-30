@@ -1,7 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:thisjowi/core/environment_profile_manager.dart';
+import 'package:thisjowi/data/models/server_info.dart';
 import 'package:thisjowi/core/exceptions/account_exceptions.dart';
 import 'package:thisjowi/services/account_service.dart';
+import 'package:thisjowi/services/auth_service.dart';
 import 'package:thisjowi/components/error_bar.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/screens/auth/passwordResetVerification.dart';
@@ -16,7 +19,21 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final AccountService _accountService = AccountService();
+  final AuthService _authService = AuthService();
   bool _isLoading = false;
+  ServerInfo _serverInfo = ServerInfo.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchServerInfo();
+  }
+
+  Future<void> _fetchServerInfo() async {
+    if (!EnvironmentProfileManager().isSelfHosted) return;
+    final info = await _authService.getServerInfo();
+    if (mounted) setState(() => _serverInfo = info);
+  }
 
   @override
   void dispose() {
@@ -27,6 +44,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<void> _sendOtp() async {
     if (_emailController.text.isEmpty) {
       ErrorSnackBar.show(context, 'Please enter your email'.i18n);
+      return;
+    }
+
+    if (EnvironmentProfileManager().isSelfHosted && !_serverInfo.smtp) {
+      ErrorSnackBar.show(context, 'Email service not configured on this server. Contact your administrator.'.i18n);
       return;
     }
 

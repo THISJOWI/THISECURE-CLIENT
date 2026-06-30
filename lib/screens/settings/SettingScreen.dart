@@ -29,6 +29,7 @@ import 'package:thisjowi/components/export_notes_sheet.dart';
 import 'package:thisjowi/components/import_notes_dialog.dart';
 import 'package:thisjowi/screens/settings/components/profile_card.dart';
 
+
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
 
@@ -193,6 +194,45 @@ class _SettingScreenState extends State<SettingScreen> {
         ErrorSnackBar.showSuccess(context, 'Biometric disabled'.i18n);
       }
     }
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            title,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Divider(
+        height: 1,
+        thickness: 0.5,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+      ),
+    );
   }
 
   Widget _buildSettingItem({
@@ -1275,15 +1315,15 @@ class _SettingScreenState extends State<SettingScreen> {
                       bottom: MediaQuery.of(context).padding.bottom + 120,
                     ),
                     children: [
-                      // Full Name
+                      // ── Profile ──
+                      _buildSectionHeader('Profile'.i18n),
                       _buildSettingItem(
                         icon: Icons.person,
                         title: 'Full Name'.i18n,
                         subtitle: _currentProfile?.fullName ?? 'Not set'.i18n,
                         onTap: _showEditFullNameDialog,
                       ),
-
-                      // Country
+                      _buildSectionDivider(),
                       _buildSettingItem(
                         icon: Icons.location_on,
                         title: 'Country'.i18n,
@@ -1291,7 +1331,8 @@ class _SettingScreenState extends State<SettingScreen> {
                         onTap: _showEditCountryDialog,
                       ),
 
-                      // Change Password
+                      // ── Security ──
+                      _buildSectionHeader('Security'.i18n),
                       if (_currentAuthUser != null &&
                           !_currentAuthUser!.isLdapUser &&
                           _currentAuthUser!.ldapUsername == null)
@@ -1301,8 +1342,10 @@ class _SettingScreenState extends State<SettingScreen> {
                           subtitle: 'Update your password'.i18n,
                           onTap: _showChangePasswordDialog,
                         ),
-
-                      // Biometric
+                      if (_currentAuthUser != null &&
+                          !_currentAuthUser!.isLdapUser &&
+                          _currentAuthUser!.ldapUsername == null)
+                        _buildSectionDivider(),
                       if (_biometricAvailable)
                         _buildSettingItem(
                           icon: _biometricType == 'Face ID'
@@ -1332,14 +1375,44 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                         ),
 
-                      // Application Version
+                      // ── Data ──
+                      _buildSectionHeader('Data'.i18n),
+                      _buildSettingItem(
+                        icon: Icons.file_download_outlined,
+                        title: 'Import Passwords'.i18n,
+                        subtitle: 'Import from file'.i18n,
+                        onTap: _handleImportPasswords,
+                      ),
+                      _buildSectionDivider(),
+                      _buildSettingItem(
+                        icon: Icons.file_upload_outlined,
+                        title: 'Export Passwords'.i18n,
+                        subtitle: 'Export to file'.i18n,
+                        onTap: _handleExportPasswords,
+                      ),
+                      _buildSectionDivider(),
+                      _buildSettingItem(
+                        icon: Icons.note_add_outlined,
+                        title: 'Import Notes'.i18n,
+                        subtitle: 'Import from file'.i18n,
+                        onTap: _handleImportNotes,
+                      ),
+                      _buildSectionDivider(),
+                      _buildSettingItem(
+                        icon: Icons.note_alt_outlined,
+                        title: 'Export Notes'.i18n,
+                        subtitle: 'Export to file'.i18n,
+                        onTap: _handleExportNotes,
+                      ),
+
+                      // ── Account ──
+                      _buildSectionHeader('Account'.i18n),
                       _buildSettingItem(
                         icon: Icons.info_outline,
                         title: 'Application Version'.i18n,
                         subtitle: 'Development Version'.i18n,
                       ),
-
-                      // Account & Privacy
+                      _buildSectionDivider(),
                       _buildSettingItem(
                         icon: Icons.shield_outlined,
                         title: 'Account & Privacy'.i18n,
@@ -1351,48 +1424,14 @@ class _SettingScreenState extends State<SettingScreen> {
                           );
                         },
                       ),
-
-                      // Import Passwords
-                      _buildSettingItem(
-                        icon: Icons.file_download_outlined,
-                        title: 'Import Passwords'.i18n,
-                        subtitle: 'Import from file'.i18n,
-                        onTap: _handleImportPasswords,
-                      ),
-
-                      // Export Passwords
-                      _buildSettingItem(
-                        icon: Icons.file_upload_outlined,
-                        title: 'Export Passwords'.i18n,
-                        subtitle: 'Export to file'.i18n,
-                        onTap: _handleExportPasswords,
-                      ),
-
-                      // Import Notes
-                      _buildSettingItem(
-                        icon: Icons.note_add_outlined,
-                        title: 'Import Notes'.i18n,
-                        subtitle: 'Import from file'.i18n,
-                        onTap: _handleImportNotes,
-                      ),
-
-                      // Export Notes
-                      _buildSettingItem(
-                        icon: Icons.note_alt_outlined,
-                        title: 'Export Notes'.i18n,
-                        subtitle: 'Export to file'.i18n,
-                        onTap: _handleExportNotes,
-                      ),
-
-                      // Logout
+                      _buildSectionDivider(),
                       _buildSettingItem(
                         icon: Icons.logout,
                         title: 'Logout'.i18n,
                         iconColor: Theme.of(context).colorScheme.tertiary,
                         onTap: _handleLogout,
                       ),
-
-                      // Delete Account
+                      _buildSectionDivider(),
                       _buildSettingItem(
                         icon: Icons.delete_forever,
                         title: 'Delete Account'.i18n,

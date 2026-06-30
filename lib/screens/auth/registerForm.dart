@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:thisjowi/components/error_bar.dart';
 import 'package:thisjowi/components/navigation.dart';
 import 'package:thisjowi/components/social_login_button.dart';
+import 'package:thisjowi/components/environment_mode_chip.dart';
+import 'package:thisjowi/core/environment_profile_manager.dart';
+import 'package:thisjowi/data/models/server_info.dart';
 import 'package:thisjowi/core/exceptions/auth_exceptions.dart';
 import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/screens/settings/LegalDocumentsScreen.dart';
@@ -41,6 +44,19 @@ class _RegisterFormState extends State<RegisterForm> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _acceptedPolicies = false;
+  ServerInfo _serverInfo = ServerInfo.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchServerInfo();
+  }
+
+  Future<void> _fetchServerInfo() async {
+    if (!EnvironmentProfileManager().isSelfHosted) return;
+    final info = await _authService.getServerInfo();
+    if (mounted) setState(() => _serverInfo = info);
+  }
 
   @override
   void dispose() {
@@ -88,10 +104,27 @@ class _RegisterFormState extends State<RegisterForm> {
     setState(() => _isLoading = true);
 
     try {
-      await _authService.initiateRegister(email);
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-      widget.onSuccess({'email': email, 'password': password, 'fullName': fullName, 'token': null});
+      if (EnvironmentProfileManager().isSelfHosted && !_serverInfo.smtp) {
+        await _authService.register(
+          email: email,
+          password: password,
+          fullName: fullName,
+          otp: '',
+        );
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        widget.onSuccess({
+          'email': email,
+          'password': password,
+          'fullName': fullName,
+          'token': 'bypass',
+        });
+      } else {
+        await _authService.initiateRegister(email);
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        widget.onSuccess({'email': email, 'password': password, 'fullName': fullName, 'token': null});
+      }
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -228,6 +261,13 @@ class _RegisterFormState extends State<RegisterForm> {
                           ),
                         ),
                       const SizedBox(height: 20),
+                      // Environment mode toggle
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: EnvironmentModeChip(showServerConfig: true),
+                        ),
+                      ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child: BackdropFilter(
@@ -448,28 +488,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       ),
                       const SizedBox(height: 24),
                       if (!_isLoading)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SocialLoginButton(
-                              imagePath: 'assets/google_logo.png',
-                              color: Colors.red,
-                              onTap: () => _handleSocialLogin(_googleAuthService.login),
-                            ),
-                            const SizedBox(width: 20),
-                            SocialLoginButton(
-                              imagePath: 'assets/github_logo.png',
-                              color: Colors.black,
-                              onTap: () => _handleSocialLogin(_githubAuthService.login),
-                            ),
-                            const SizedBox(width: 20),
-                            SocialLoginButton(
-                              icon: Icons.window,
-                              color: const Color(0xFF00A4EF),
-                              onTap: () => _handleSocialLogin(_microsoftAuthService.login),
-                            ),
-                          ],
-                        ),
+                        _buildSocialButtons(),
                       const SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -499,6 +518,46 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialButtons() {
+    final isSelfHosted = EnvironmentProfileManager().isSelfHosted;
+    final showGoogle = !isSelfHosted || _serverInfo.hasGoogle;
+    final showGithub = !isSelfHosted || _serverInfo.hasGithub;
+    final showMicrosoft = !isSelfHosted || _serverInfo.hasMicrosoft;
+    final hasAny = showGoogle || showGithub || showMicrosoft;
+    if (!hasAny) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (showGoogle)
+            SocialLoginButton(
+              imagePath: 'assets/google_logo.png',
+              color: Colors.red,
+              onTap: () => _handleSocialLogin(_googleAuthService.login),
+            ),
+          if (showGoogle && (showGithub || showMicrosoft))
+            const SizedBox(width: 20),
+          if (showGithub)
+            SocialLoginButton(
+              imagePath: 'assets/github_logo.png',
+              color: Colors.black,
+              onTap: () => _handleSocialLogin(_githubAuthService.login),
+            ),
+          if (showGithub && showMicrosoft)
+            const SizedBox(width: 20),
+          if (showMicrosoft)
+            SocialLoginButton(
+              icon: Icons.window,
+              color: const Color(0xFF00A4EF),
+              onTap: () => _handleSocialLogin(_microsoftAuthService.login),
+            ),
         ],
       ),
     );

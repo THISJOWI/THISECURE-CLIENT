@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:thisjowi/core/exceptions/auth_exceptions.dart';
 import 'package:thisjowi/data/models/auth_user.dart';
+import 'package:thisjowi/data/models/server_info.dart';
 import 'package:thisjowi/data/models/user.dart';
 import 'package:thisjowi/data/local/secure_storage_service.dart';
 import 'package:thisjowi/services/base_service.dart';
@@ -127,19 +128,17 @@ class AuthService extends BaseService {
 
   /// Login con LDAP
   Future<AuthUser> loginWithLdap(
-    String username,
+    String email,
     String password,
-    String domain,
   ) async {
-    logInfo('Attempting LDAP login for user: $username@$domain');
+    logInfo('Attempting LDAP login for email: $email');
 
     try {
       final response = await apiClient.post(
         '/v1/auth/ldap/login',
         body: {
-          'username': username,
+          'email': email,
           'password': password,
-          'domain': domain,
         },
         requiresAuth: false,
       );
@@ -159,6 +158,8 @@ class AuthService extends BaseService {
       // Guardar email para DAOs
       final secureStorage = SecureStorageService();
       await secureStorage.saveValue('cached_email', authUser.email);
+      await secureStorage.saveValue('is_ldap_user', 'true');
+      await secureStorage.saveValue('ldap_domain', email.split('@').last);
 
       await _cryptoService.initKeys();
 
@@ -176,7 +177,7 @@ class AuthService extends BaseService {
       logError('LDAP login error', e, stackTrace);
       throw LdapException(
         message: 'Error en autenticacion LDAP: $e',
-        domain: domain,
+        domain: email.split('@').lastOrNull ?? '',
         details: e,
       );
     }
@@ -352,6 +353,9 @@ class AuthService extends BaseService {
     } finally {
       // Siempre limpiar tokens locales
       await _tokenManager.clearToken();
+      final secureStorage = SecureStorageService();
+      await secureStorage.deleteValue('is_ldap_user');
+      await secureStorage.deleteValue('ldap_domain');
       logInfo('Logout complete');
     }
   }
@@ -384,6 +388,23 @@ class AuthService extends BaseService {
       logDebug('Token validation error: $e');
       return false;
     }
+  }
+
+  /// Fetch server configuration info
+  Future<ServerInfo> getServerInfo() async {
+    try {
+      final response = await apiClient.get(
+        '/v1/auth/server-info',
+        requiresAuth: false,
+      );
+      if (response.statusCode == 200) {
+        final body = parseJsonBody(response);
+        return ServerInfo.fromJson(body);
+      }
+    } catch (e) {
+      logWarning('Failed to fetch server info: $e');
+    }
+    return ServerInfo.empty();
   }
 
   /// Refrescar token

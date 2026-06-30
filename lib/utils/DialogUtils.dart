@@ -167,6 +167,12 @@ class DialogUtils {
     );
 
     if (result != null && result.isNotEmpty) {
+      // Try to find real user ID from LDAP data for avatar loading
+      final ldapUser = ldapUsers.cast<Map<String, dynamic>?>().firstWhere(
+        (u) => u?['email']?.toString() == result,
+        orElse: () => null,
+      );
+      final realId = ldapUser?['userId']?.toString() ?? ldapUser?['id']?.toString();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -174,7 +180,12 @@ class DialogUtils {
             conversation: Conversation(
               id: 'new', // Flag for new conversation
               participants: [
-                User(id: 'recipient', email: result), // Placeholder
+                User(
+                  id: realId ?? 'recipient',
+                  email: result,
+                  fullName: ldapUser?['fullName']?.toString(),
+                  avatarUrl: ldapUser?['avatarUrl']?.toString() ?? ldapUser?['avatar_url']?.toString(),
+                ),
               ],
               updatedAt: DateTime.now(),
             ),
