@@ -169,6 +169,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                             decoration: InputDecoration(
+                              labelText: 'Search'.i18n,
                               hintText: 'Search'.i18n,
                               hintStyle: TextStyle(
                                   color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
@@ -181,6 +182,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                       icon: Icon(Icons.close,
                                           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                           size: 20),
+                                      tooltip: 'Clear search'.i18n,
                                       onPressed: () {
                                         setState(() => _searchQuery = '');
                                       },
@@ -438,7 +440,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
       userId: userId,
       avatarUrl: avatarUrl,
       initial: initial,
-      size: 48,
     );
   }
 
@@ -507,7 +508,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           id: conv.id,
                           participants: conv.participants,
                           lastMessage: conv.lastMessage,
-                          unreadCount: 0,
                           updatedAt: DateTime.now(),
                         );
                       }

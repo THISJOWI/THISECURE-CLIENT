@@ -99,7 +99,7 @@ class ThemeSelectorWidget extends StatelessWidget {
               size: 24,
               color: isSelected 
                   ? Theme.of(context).primaryColor
-                  : Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                  : Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
             ),
             const SizedBox(width: 16),
             Expanded(

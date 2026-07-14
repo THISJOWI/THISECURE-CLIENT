@@ -1,8 +1,8 @@
 THISECURE COOKIE POLICY
 
-Last updated: June 4, 2026
+Last updated: July 14, 2026
 
-This Cookie Policy explains how THISECURE ("we", "us", or "our") uses cookies and similar technologies when you use our mobile application and related services (the "Service").
+This Cookie Policy explains how THISECURE ("we", "us", or "our") uses cookies and similar technologies when you use our mobile application, web services, and related services (the "Service").
 
 1. WHAT ARE COOKIES
 
@@ -22,6 +22,7 @@ auth_token              | Authentication session management            | 24 hour
 refresh_token           | Token renewal without re-login              | 7 days
 language_preference     | Remember your selected language              | 90 days
 theme_preference        | Remember your UI theme (light/dark)         | 90 days
+oauth_state             | OAuth2 anti-CSRF state parameter            | 10 minutes
 
 2.2. Preference Cookies (Functional Cookies)
 
@@ -32,25 +33,42 @@ Cookie Name             | Purpose                                      | Duratio
 onboarding_completed   | Track onboarding flow completion             | Persistent
 autofill_prompt_shown  | Remember if autofill prompt was shown        | Persistent
 app_open_count         | Track application launch count               | Session
+self_hosted_host       | Remember self-hosted server configuration    | Persistent
+self_hosted_port       | Remember self-hosted server port             | Persistent
+custom_api_url         | Remember custom API endpoint URL             | Persistent
+telemetry_opt_out      | Remember your telemetry preference           | Persistent
 
-2.3. Third-Party Cookies
+2.3. Local Storage and Similar Technologies
 
-We do not use advertising, analytics, or tracking cookies. The Service does not integrate any third-party analytics, advertising networks, or social media tracking pixels.
+The Service uses local storage and shared preferences for:
+- Storing authentication tokens (flutter_secure_storage)
+- Caching user preferences (theme, language, notifications)
+- Remembering server configuration for self-hosted mode
+- Storing onboarding completion status
 
-When you choose to sign in via OAuth2 providers (Google, GitHub, Microsoft), those providers may set their own cookies governed by their respective privacy policies.
+2.4. Third-Party Technologies
 
-3. HOW TO MANAGE COOKIES
+We do not use advertising, analytics, or tracking cookies from third parties. However:
+
+- **Aptabase**: When telemetry is enabled, Aptabase uses local storage to track anonymous usage data (screen views, feature usage). No personal identifiers are collected. You can opt out at any time from application settings.
+- **OAuth2 providers** (Google, GitHub, Microsoft): When you choose to sign in via these providers, they may set their own cookies governed by their respective privacy policies.
+- **OpenStreetMap (Nominatim)**: The country selection map feature calls the Nominatim API but does not set any cookies.
+
+3. SELF-HOSTED INSTANCES
+
+If you are using a self-hosted instance of THISECURE, cookies and local storage are managed by your instance and browser. Telemetry is disabled by default in self-hosted mode.
+
+4. HOW TO MANAGE COOKIES
 
 Since this Service is primarily a mobile application, cookie management depends on your platform:
-
 - iOS/macOS: Application settings may allow you to reset identifiers. System-level cookie management is available in Safari settings.
 - Android: Cookie settings can be managed through your browser or WebView settings.
 - Desktop: Your browser settings allow you to view, block, or delete cookies.
 
-4. CHANGES TO THIS POLICY
+5. CHANGES TO THIS POLICY
 
 We may update this Cookie Policy from time to time. Changes will be notified via the application or on our website.
 
-5. CONTACT
+6. CONTACT
 
 For questions about this Cookie Policy, contact us at privacy@thisjowi.uk.

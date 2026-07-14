@@ -48,7 +48,8 @@ class _AutofillSettingsCardState extends State<AutofillSettingsCard> {
   void _showIOSInstructions() {
     showDialog(
       context: context,
-      builder: (context) => BackdropFilter(
+      builder: (context) => ExcludeSemantics(
+        child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: AlertDialog(
           backgroundColor: Theme.of(context).cardColor.withValues(alpha: 0.85),
@@ -94,10 +95,11 @@ class _AutofillSettingsCardState extends State<AutofillSettingsCard> {
           padding: EdgeInsets.all(16),
           child: Center(
             child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }
+      ),
+      ),
+      ),
+    );
+  }
 
     if (_status == null || !_status!.isSupported) {
       return const SizedBox.shrink();
@@ -228,6 +230,7 @@ class _AutofillPasswordPickerState extends State<AutofillPasswordPicker> {
         title: Text('Select password'.i18n),
         leading: IconButton(
           icon: const Icon(Icons.close),
+          tooltip: 'Close'.i18n,
           onPressed: widget.onCancel,
         ),
       ),
@@ -270,6 +273,7 @@ class _AutofillPasswordPickerState extends State<AutofillPasswordPicker> {
             padding: const EdgeInsets.all(16),
             child: TextField(
               decoration: InputDecoration(
+                labelText: 'Search passwords'.i18n,
                 hintText: 'Search password...'.i18n,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(

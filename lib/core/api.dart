@@ -111,6 +111,7 @@ debugPrint('🔧 API: $baseUrl');
 
   static void clearManualBaseUrl() {
     _manualBaseUrl = null;
+    SharedPreferences.getInstance().then((prefs) => prefs.remove('custom_api_url'));
   }
 
   /// Versión de la API

@@ -34,7 +34,10 @@ class SocialLoginButton extends StatelessWidget {
         ),
         child: Center(
           child: imagePath != null
-              ? Image.asset(imagePath!, width: 28, height: 28)
+              ? Semantics(
+                  label: imagePath?.contains('google') == true ? 'Google' : '',
+                  child: Image.asset(imagePath!, width: 28, height: 28),
+                )
               : Icon(icon, color: color, size: 28),
         ),
       ),

@@ -147,7 +147,6 @@ class _BiometricLockScreenState extends State<BiometricLockScreen>
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
-                      width: 1,
                     ),
                   ),
                   child: _isAuthenticating

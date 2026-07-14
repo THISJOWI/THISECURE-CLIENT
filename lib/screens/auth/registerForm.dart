@@ -189,6 +189,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   color: isDark ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                  tooltip: 'Back'.i18n,
                   onPressed: widget.onBack,
                 ),
               ),
@@ -210,7 +211,6 @@ class _RegisterFormState extends State<RegisterForm> {
                             BoxShadow(
                               color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
                               blurRadius: 40,
-                              spreadRadius: 0,
                             ),
                           ],
                         ),
@@ -262,9 +262,9 @@ class _RegisterFormState extends State<RegisterForm> {
                         ),
                       const SizedBox(height: 20),
                       // Environment mode toggle
-                      Center(
+                      const Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
+                          padding: EdgeInsets.only(bottom: 16),
                           child: EnvironmentModeChip(showServerConfig: true),
                         ),
                       ),
@@ -361,6 +361,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                         color: isDark ? Colors.white.withValues(alpha: 0.5) : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                         size: 20,
                                       ),
+                                      tooltip: _obscurePassword ? 'Show password'.i18n : 'Hide password'.i18n,
                                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                                     ),
                                     labelText: 'Password'.i18n,

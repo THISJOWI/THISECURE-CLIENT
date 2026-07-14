@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thisjowi/core/api.dart';
 import 'package:thisjowi/core/environment_profile.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/services/token_manager.dart';
 
 class EnvironmentProfileManager extends ChangeNotifier {
@@ -103,5 +104,9 @@ class EnvironmentProfileManager extends ChangeNotifier {
 
     TokenManager().setStoragePrefix(activeStoragePrefix);
     notifyListeners();
+    TelemetryService.trackEvent('environment_switched', data: {
+      'profile': profileId,
+      'mode': profile.isCloud ? 'cloud' : 'self_hosted',
+    });
   }
 }

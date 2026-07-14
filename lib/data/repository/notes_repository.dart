@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:thisjowi/data/models/note_entry.dart' as models;
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 import '../local/database.dart';
 import '../../services/notesService.dart';
@@ -186,6 +187,7 @@ class NotesRepository {
         _syncNoteInBackground(localId, createdNote);
       }
 
+      TelemetryService.trackEvent('note_created');
       return {
         'success': true,
         'data': createdNote,
@@ -328,6 +330,7 @@ class NotesRepository {
         await _db.notesDao.hardDeleteNote(localId);
       }
 
+      TelemetryService.trackEvent('note_deleted');
       return {
         'success': true,
         'message': 'Note deleted successfully'

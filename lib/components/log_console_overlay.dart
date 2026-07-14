@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thisjowi/utils/app_logger.dart';
+import 'package:thisjowi/i18n/translations.dart';
 
 /// Overlay flotante para mostrar logs en tiempo real durante desarrollo
 class LogConsoleOverlay extends StatefulWidget {
@@ -168,6 +169,7 @@ void _clearLogs() {
                             size: 16,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
+                          tooltip: 'Toggle logs'.i18n,
                           onPressed: () => setState(() => _isMinimized = !_isMinimized),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -179,6 +181,7 @@ void _clearLogs() {
                             size: 16,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
+                          tooltip: 'Clear logs'.i18n,
                           onPressed: _clearLogs,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -190,6 +193,7 @@ void _clearLogs() {
                             size: 16,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
+                          tooltip: 'Close'.i18n,
                           onPressed: () => setState(() => _isVisible = false),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -204,6 +208,7 @@ void _clearLogs() {
                       child: TextField(
                         style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 11),
                         decoration: InputDecoration(
+                          labelText: 'Filter logs',
                           hintText: 'Filter...',
                           hintStyle: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),

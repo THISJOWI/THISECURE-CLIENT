@@ -1,17 +1,20 @@
 POLÍTICA DE PRIVACIDAD DE THISECURE
 
-Última actualización: 4 de junio de 2026
+Última actualización: 14 de julio de 2026
 
-Esta Política de Privacidad describe cómo THISECURE ("nosotros" o "nuestro") recopila, utiliza, almacena y protege sus datos personales cuando utiliza nuestra aplicación móvil y servicios relacionados (el "Servicio").
+Esta Política de Privacidad describe cómo THISECURE ("nosotros" o "nuestro") recopila, utiliza, almacena y protege sus datos personales cuando utiliza nuestra aplicación móvil, servicios web y servicios relacionados (el "Servicio").
 
 Esta Política está redactada en cumplimiento del Reglamento (UE) 2016/679 (Reglamento General de Protección de Datos o "RGPD") y la Ley Orgánica 3/2018 de Protección de Datos y Garantía de los Derechos Digitales (LOPDGDD).
 
+Si utiliza una instancia autogestionada (self-hosted) de THISECURE, el responsable del tratamiento es la organización o individuo que opera dicha instancia, no THISECURE. Consulte su política de privacidad para obtener detalles sobre cómo gestionan sus datos.
+
 1. RESPONSABLE DEL TRATAMIENTO
 
+Para usuarios del Servicio en la nube (cloud):
 ThisJowi
 Correo electrónico: privacy@thisjowi.uk
 
-Somos el responsable del tratamiento de los datos personales que procesamos en relación con el Servicio.
+Para usuarios de instancias autogestionadas, el responsable del tratamiento es la entidad que opera la instancia.
 
 2. DATOS PERSONALES QUE RECOPILAMOS
 
@@ -48,6 +51,38 @@ Cuando utiliza Google, GitHub o Microsoft para iniciar sesión, recibimos:
 - URL de la foto de perfil
 - Identificador específico del proveedor
 
+2.4. Datos recopilados mediante LDAP (solo cuentas empresariales):
+
+Cuando su organización utiliza autenticación LDAP, podemos recibir:
+- Dirección de correo electrónico
+- Nombre completo
+- Foto de perfil (jpegPhoto)
+- Número de teléfono
+- País
+- Departamento o unidad organizativa
+- Atributos de directorio configurados por su organización
+
+2.5. Datos de telemetría y análisis:
+
+Cuando utiliza el Servicio en la nube con telemetría habilitada, recopilamos datos de uso anónimos a través de Aptabase:
+- Vistas de pantalla (solo nombres de página, sin contenido)
+- Versión de la aplicación y plataforma (iOS, Android, escritorio)
+- Marcas de tiempo de sesión
+- Eventos de autenticación: inicio de sesión, inicio fallido, registro, registro fallido, cierre de sesión, inicio social (Google, GitHub, Microsoft)
+- Eventos de gestión de contraseñas: contraseña creada, contraseña eliminada
+- Eventos de gestión de notas: nota creada, nota eliminada
+- Eventos de gestión de OTP: OTP creado, OTP eliminado
+- Eventos de cuenta: cuenta eliminada, contraseña cambiada, biométrico activado/desactivado, datos importados, datos exportados
+- Eventos de navegación y despliegue: entorno cambiado, perfil autogestionado añadido, búsqueda realizada
+- Eventos de registro: cuenta autogestionada registrada
+- No se asocian identificadores personales a los datos de telemetría
+
+La telemetría está deshabilitada por defecto en instancias autogestionadas y se puede desactivar en cualquier momento desde la configuración de la aplicación.
+
+2.6. Datos de ubicación:
+
+Cuando utiliza el mapa de selección de país, sus coordenadas geográficas seleccionadas se envían a OpenStreetMap (API de Nominatim) para geocodificación inversa. THISECURE no almacena coordenadas de ubicación precisas — solo se almacena el nombre del país seleccionado en su perfil.
+
 3. FINALIDADES Y BASES LEGALES DEL TRATAMIENTO
 
 Finalidad                        | Base Legal (RGPD)
@@ -59,6 +94,7 @@ Procesamiento de suscripciones   | Art. 6.1.b — ejecución contractual
 Atención al cliente              | Art. 6.1.b — ejecución contractual
 Mejora del Servicio              | Art. 6.1.f — interés legítimo
 Cumplimiento legal (fiscal)      | Art. 6.1.c — obligación legal
+Telemetría anónima               | Art. 6.1.f — interés legítimo
 
 No utilizamos sus datos personales para toma de decisiones automatizada ni elaboración de perfiles.
 
@@ -70,32 +106,39 @@ Los mensajes intercambiados entre usuarios están protegidos mediante cifrado de
 
 4.2. Cifrado en el Servidor
 
-Las entradas del gestor de contraseñas y las notas se cifran en reposo en nuestros servidores utilizando AES-256-GCM con claves de 256 bits. Las claves de cifrado son independientes de las claves de autenticación y nunca se comparten con terceros.
+Las entradas del gestor de contraseñas, las notas y los secretos OTP se cifran en reposo en nuestros servidores utilizando AES-256-GCM con claves de 256 bits. Las contraseñas de enlace LDAP se cifran con AES-256-GCM. Las claves de cifrado son independientes de las claves de autenticación y nunca se comparten con terceros.
 
 4.3. Datos en Reposo
 
 Sus datos se almacenan en múltiples bases de datos seguras:
-- Bases de datos PostgreSQL para cuentas de usuario, perfiles, contraseñas, notas y configuraciones OTP
+- Bases de datos PostgreSQL para cuentas de usuario, perfiles, datos de suscripción, contraseñas, notas, configuraciones OTP y organizaciones
 - Apache Cassandra para mensajes
-- Redis/KeyDB para datos de sesión temporales y códigos de verificación
+- MongoDB para datos del servicio de mensajería (conversaciones, caché de usuarios LDAP)
+- Redis/KeyDB para datos de sesión temporales, códigos de verificación OTP y tokens revocados
+- Cloudflare R2 (compatible con S3) para almacenamiento de avatares (solo nube)
+- Sistema de archivos local para almacenamiento de avatares (solo autogestionado)
 
 4.4. Ubicaciones de Almacenamiento
 
-Nuestra infraestructura está alojada en la Unión Europea. El almacenamiento de objetos Cloudflare R2 (utilizado para avatares) puede procesar datos en los Estados Unidos bajo el EU-US Data Privacy Framework.
+Nuestra infraestructura en la nube está alojada en la Unión Europea. El almacenamiento de objetos Cloudflare R2 (utilizado para avatares) puede procesar datos en los Estados Unidos bajo el EU-US Data Privacy Framework.
 
 5. PLAZOS DE CONSERVACIÓN
 
 Categoría de Datos               | Período de Conservación
 ---------------------------------|------------------------
-Datos de cuenta                  | Hasta eliminación de cuenta + 30 días
+Datos de cuenta                  | Hasta eliminación de cuenta (eliminación permanente, sin recuperación)
 Gestor de contraseñas            | Hasta eliminación de cuenta
 Notas                            | Hasta eliminación de cuenta
-Mensajes                         | Hasta eliminación de cuenta
+Mensajes                         | Hasta eliminación de cuenta o eliminación por el usuario
 Configuraciones OTP              | Hasta eliminación de cuenta
 Códigos de verificación (Redis)  | 10-15 minutos (eliminación automática)
 Tokens de sesión temporales      | 24 horas (caducidad del JWT)
+Tokens JWT revocados (Redis)     | Hasta caducidad del token
 Registros de pago/suscripción   | 5 años (obligación legal fiscal)
-Datos de registro                | 90 días
+Datos de registro (inicios sesión)| 90 días
+Mensajes de Kafka                | Retención configurable (por defecto: 7 días)
+Datos de telemetría (Aptabase)   | 12 meses
+Imágenes de avatar               | Hasta eliminación de cuenta o reemplazo del avatar
 
 6. COMPARTICIÓN DE DATOS Y TERCEROS
 
@@ -104,75 +147,102 @@ Solo compartimos sus datos con proveedores de servicios esenciales:
 Proveedor de Servicio           | Finalidad                  | Datos Compartidos
 -------------------------------|---------------------------|------------------
 Cloudflare R2                  | Almacenamiento de avatares | Imágenes de avatar
-Stripe                         | Pagos de suscripción      | Datos de pago, ID de cliente
+Stripe                         | Pagos de suscripción      | Datos de pago, ID de cliente, ID de suscripción
 Google (OAuth2)               | Inicio de sesión social   | Correo, nombre, foto
 GitHub (OAuth2)               | Inicio de sesión social   | Correo, nombre, avatar
 Microsoft (OAuth2)            | Inicio de sesión social   | Correo, nombre, foto
-Docker Hub                    | Registro de contenedores  | Ningún dato personal
+OpenStreetMap (Nominatim)     | Mapa de selección de país | Coordenadas geográficas (lat/lng) — no se almacenan
+Aptabase                       | Telemetría anónima        | Versión de app, plataforma, nombres de pantalla — sin PII
+Proveedor SMTP                | Envío de correos          | Correo electrónico, códigos OTP, enlaces de verificación
+HashiCorp Vault               | Gestión de secretos       | Credenciales de base de datos (sin datos personales)
 
-No vendemos sus datos personales a terceros. No utilizamos servicios de análisis, publicidad o seguimiento de terceros.
+No vendemos sus datos personales a terceros. No utilizamos servicios de publicidad o seguimiento de terceros.
 
-7. TRANSFERENCIAS INTERNACIONALES DE DATOS
+7. PROCESAMIENTO DE DATOS BAJO LDAP
+
+Cuando su organización integra THISECURE con Active Directory o LDAP:
+- La autenticación se realiza contra el servidor LDAP de su organización
+- Los atributos del directorio (nombre, correo, foto, teléfono, departamento) se sincronizan para proporcionar el Servicio
+- THISECURE procesa estos datos en nombre de su organización como encargado del tratamiento
+- Su organización sigue siendo el responsable del tratamiento para los datos provenientes de LDAP
+- Las credenciales de enlace LDAP se cifran en reposo (AES-256-GCM)
+
+8. INSTANCIAS AUTOGESTIONADAS (SELF-HOSTED)
+
+Cuando despliega THISECURE en su propia infraestructura:
+- Todos los datos se almacenan en sus propios servidores e infraestructura
+- THISECURE (ThisJowi) no tiene acceso a sus datos
+- La telemetría está deshabilitada por defecto
+- Usted es responsable del cumplimiento de las leyes de protección de datos aplicables
+- THISECURE actúa como proveedor de software, no como encargado del tratamiento
+- Debe implementar sus propias medidas de seguridad, copias de seguridad y políticas de retención de datos
+
+9. TRANSFERENCIAS INTERNACIONALES DE DATOS
 
 Cuando los datos se transfieren fuera del Espacio Económico Europeo (EEE), garantizamos las salvaguardas adecuadas:
 - Certificación EU-US Data Privacy Framework (cuando corresponda)
 - Cláusulas Contractuales Tipo (SCC) adoptadas por la Comisión Europea
 - Decisiones de adecuación de la Comisión Europea
 
-8. SUS DERECHOS
+10. SUS DERECHOS
 
 Según el RGPD, usted tiene los siguientes derechos:
 
-8.1. Derecho de Acceso (Art. 15)
+10.1. Derecho de Acceso (Art. 15)
 Puede solicitar una copia de todos los datos personales que tenemos sobre usted.
 
-8.2. Derecho de Rectificación (Art. 16)
+10.2. Derecho de Rectificación (Art. 16)
 Puede corregir datos inexactos o incompletos a través de la configuración de su perfil.
 
-8.3. Derecho de Supresión ("Derecho al Olvido") (Art. 17)
-Puede eliminar su cuenta, lo que eliminará sus datos personales de nuestros sistemas.
+10.3. Derecho de Supresión ("Derecho al Olvido") (Art. 17)
+Puede eliminar su cuenta, lo que eliminará permanentemente sus datos personales de nuestros sistemas. La eliminación de la cuenta es irreversible — los datos no se pueden recuperar después de la eliminación.
 
-8.4. Derecho a la Limitación del Tratamiento (Art. 18)
+10.4. Derecho a la Limitación del Tratamiento (Art. 18)
 Puede solicitar que limitemos cómo utilizamos sus datos.
 
-8.5. Derecho a la Portabilidad de Datos (Art. 20)
-Puede solicitar sus datos en un formato estructurado, de uso común y legible por máquina.
+10.5. Derecho a la Portabilidad de Datos (Art. 20)
+Puede exportar sus datos a través de la función de importación/exportación de la aplicación en un formato estructurado, de uso común y legible por máquina, o solicitar una exportación manual.
 
-8.6. Derecho de Oposición (Art. 21)
-Puede oponerse al tratamiento basado en interés legítimo.
+10.6. Derecho de Oposición (Art. 21)
+Puede oponerse al tratamiento basado en interés legítimo, incluida la recopilación de telemetría.
 
-8.7. Derecho a Retirar el Consentimiento
+10.7. Derecho a Retirar el Consentimiento
 Cuando el tratamiento se basa en el consentimiento, puede retirarlo en cualquier momento sin que ello afecte a la licitud del tratamiento previo.
 
 Para ejercer cualquiera de estos derechos, contáctenos en privacy@thisjowi.uk. Responderemos en un plazo de 30 días.
 
 Si no queda satisfecho con nuestra respuesta, tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) en www.aepd.es.
 
-9. SEGURIDAD DE LOS DATOS
+11. SEGURIDAD DE LOS DATOS
 
 Implementamos medidas técnicas y organizativas apropiadas para proteger sus datos, incluyendo:
 - Cifrado de extremo a extremo (X25519 + HKDF + AES-256-GCM)
 - Cifrado en reposo en el servidor (AES-256-GCM)
-- Hash de contraseñas con BCrypt
+- Hash de contraseñas con BCrypt (factor de costo 12)
 - Autenticación mediante tokens JWT con firma HMAC-SHA256
 - TLS/HTTPS para todos los datos en tránsito
 - Limitación de velocidad en endpoints de autenticación
-- Bloqueo de cuenta tras intentos fallidos
+- Bloqueo de cuenta tras intentos fallidos (progresivo: 5min, 15min, 1h)
 - Opción de autenticación biométrica (a nivel de dispositivo)
+- Validación de entrada y escape HTML en contenido proporcionado por el usuario
+- Validación de tipo de archivo y tamaño en las subidas
+- Comunicación entre servicios con firma HMAC a través de Kafka
+- Escaneo de seguridad periódico (CodeQL, Trivy, Gitleaks) en el pipeline de CI
+- HashiCorp Vault para credenciales dinámicas de base de datos (nube)
 
-10. MENORES DE EDAD
+12. MENORES DE EDAD
 
 El Servicio no está destinado a menores de 16 años. No recopilamos conscientemente datos personales de menores. Si tiene conocimiento de que un menor nos ha proporcionado datos personales, contáctenos inmediatamente.
 
-11. CAMBIOS EN ESTA POLÍTICA
+13. CAMBIOS EN ESTA POLÍTICA
 
 Podemos actualizar esta Política de Privacidad periódicamente. Los cambios materiales se notificarán a través de la aplicación o por correo electrónico al menos 30 días antes de su entrada en vigor.
 
-12. CONTACTO
+14. CONTACTO
 
 Delegado de Protección de Datos: privacy@thisjowi.uk
 Servicio: THISECURE
-Última actualización: 4 de junio de 2026
+Última actualización: 14 de julio de 2026
 
 Autoridad de Control:
 Agencia Española de Protección de Datos (AEPD)

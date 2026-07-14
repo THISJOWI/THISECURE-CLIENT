@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/models/user.dart';
+import '../i18n/translations.dart';
 
 /// Widget para mostrar información de usuario LDAP
 class LdapUserCard extends StatelessWidget {
@@ -200,6 +201,7 @@ class _InfoRow extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.content_copy),
                       iconSize: 14,
+                      tooltip: 'Copy'.i18n,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                       onPressed: () {

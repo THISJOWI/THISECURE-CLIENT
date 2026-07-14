@@ -252,6 +252,7 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
                                 style: TextStyle(
                                     color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                                 decoration: InputDecoration(
+                                  labelText: 'Search'.i18n,
                                   hintText: 'Search'.i18n,
                                   hintStyle: TextStyle(
                                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
@@ -265,6 +266,7 @@ class _OtpScreenState extends State<OtpScreen> with WidgetsBindingObserver {
                                               color: Theme.of(context).colorScheme.onSurface
                                                   .withValues(alpha: 0.6),
                                               size: 20),
+                                          tooltip: 'Clear search'.i18n,
                                           onPressed: () {
                                             otpProvider.clearSearch();
                                           },
@@ -472,11 +474,13 @@ class _OtpCard extends StatelessWidget {
                   color: Colors.red.withValues(alpha: 0.5),
                   size: 20,
                 ),
+                tooltip: 'Delete'.i18n,
               ),
             ],
           ),
         ),
       );
+
     }
 
     return Container(
@@ -552,12 +556,12 @@ class _OtpCard extends StatelessWidget {
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                             size: 20,
                           ),
+                          tooltip: 'Delete'.i18n,
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Text(
@@ -602,13 +606,13 @@ class _OtpCard extends StatelessWidget {
                         Icon(
                           Icons.touch_app,
                           size: 14,
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55),
                         ),
                         const SizedBox(width: 4),
                         Text(
                           'Tap to copy'.i18n,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55),
                             fontSize: 12,
                           ),
                         ),

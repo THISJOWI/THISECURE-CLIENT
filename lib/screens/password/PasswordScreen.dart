@@ -237,6 +237,7 @@ _passwordsRepository = PasswordsRepository();
                             icon: Icon(Icons.copy,
                                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                 size: 18),
+                            tooltip: 'Copy username'.i18n,
                             onPressed: () {
                               Clipboard.setData(
                                   ClipboardData(text: entry.username));
@@ -287,6 +288,7 @@ _passwordsRepository = PasswordsRepository();
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                             size: 18,
                           ),
+                          tooltip: showPassword ? 'Hide password'.i18n : 'Show password'.i18n,
                           onPressed: () =>
                               setState(() => showPassword = !showPassword),
                           constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -296,6 +298,7 @@ _passwordsRepository = PasswordsRepository();
                         IconButton(
                           icon: Icon(Icons.copy,
                               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7), size: 18),
+                          tooltip: 'Copy password'.i18n,
                           onPressed: () {
                             Clipboard.setData(
                                 ClipboardData(text: entry.password));
@@ -422,6 +425,7 @@ _passwordsRepository = PasswordsRepository();
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                           decoration: InputDecoration(
+                            labelText: 'Search passwords'.i18n,
                             hintText: 'Search passwords'.i18n,
                           hintStyle: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
@@ -433,6 +437,7 @@ _passwordsRepository = PasswordsRepository();
                                   icon: Icon(Icons.close,
                                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                       size: 20),
+                                  tooltip: 'Clear search'.i18n,
                                   onPressed: () {
                                     setState(() => _searchQuery = '');
                                     _loadPasswords();
@@ -524,6 +529,7 @@ _passwordsRepository = PasswordsRepository();
                                                 color: Theme.of(context).colorScheme.onSurface
                                                     .withValues(alpha: 0.7),
                                                 size: 20),
+                                            tooltip: 'Edit'.i18n,
                                             onPressed: () async {
                                               final edited =
                                                   await showDialog<bool>(
@@ -555,6 +561,7 @@ _passwordsRepository = PasswordsRepository();
                                                 color: Theme.of(context).colorScheme.onSurface
                                                     .withValues(alpha: 0.7),
                                                 size: 20),
+                                            tooltip: 'Delete'.i18n,
                                             onPressed: () =>
                                                 _deletePassword(entry),
                                             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),

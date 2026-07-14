@@ -87,6 +87,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back,
               color: isDark ? Colors.white : Theme.of(context).colorScheme.onSurface),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context, false),
         ),
       ),

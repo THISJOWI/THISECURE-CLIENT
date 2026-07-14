@@ -10,6 +10,7 @@ import 'package:thisjowi/data/models/user.dart';
 import 'package:thisjowi/data/local/secure_storage_service.dart';
 import 'package:thisjowi/services/base_service.dart';
 import 'package:thisjowi/services/cryptoService.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/services/token_manager.dart';
 
 /// Servicio de autenticacion
@@ -107,17 +108,21 @@ class AuthService extends BaseService {
       await _cryptoService.initKeys();
 
       logInfo('Login successful for user: ${authUser.id}');
+      TelemetryService.trackEvent('login');
       return authUser;
     } on AuthException {
+      TelemetryService.trackEvent('login_failed', data: {'error': 'auth_exception'});
       rethrow;
     } on SocketException catch (e) {
       logWarning('Network error during login: $e');
+      TelemetryService.trackEvent('login_failed', data: {'error': 'network'});
       throw NetworkException(
         message: 'Error de conexion. Verifica tu internet.',
         details: e,
       );
     } catch (e, stackTrace) {
       logError('Unexpected error during login', e, stackTrace);
+      TelemetryService.trackEvent('login_failed', data: {'error': 'unexpected'});
       throw AuthException(
         message: 'Error inesperado: $e',
         code: 'UNEXPECTED_ERROR',
@@ -320,8 +325,13 @@ class AuthService extends BaseService {
       await _cryptoService.initKeys();
 
       logInfo('Registration successful for user: ${authUser.id}');
+      TelemetryService.trackEvent('register');
+      if (hostingMode != null && hostingMode.toLowerCase().contains('self')) {
+        TelemetryService.trackEvent('selfhosted_account_registered');
+      }
       return authUser;
     } on AuthException {
+      TelemetryService.trackEvent('register_failed', data: {'error': 'auth_exception'});
       rethrow;
     } catch (e, stackTrace) {
       logError('Registration error', e, stackTrace);
@@ -343,7 +353,6 @@ class AuthService extends BaseService {
         try {
           await apiClient.post(
             '/v1/auth/logout',
-            requiresAuth: true,
           );
         } catch (e) {
           // Ignorar errores al notificar logout
@@ -357,6 +366,7 @@ class AuthService extends BaseService {
       await secureStorage.deleteValue('is_ldap_user');
       await secureStorage.deleteValue('ldap_domain');
       logInfo('Logout complete');
+      TelemetryService.trackEvent('logout');
     }
   }
 
@@ -374,7 +384,6 @@ class AuthService extends BaseService {
       // Validar contra backend
       final response = await apiClient.get(
         '/v1/auth/validate',
-        requiresAuth: true,
       );
 
       if (response.statusCode == 200) {

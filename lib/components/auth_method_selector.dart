@@ -92,10 +92,13 @@ class AuthMethodSelector extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/google_logo.png',
-                            width: 24,
-                            height: 24,
+                          Semantics(
+                            label: 'Google',
+                            child: Image.asset(
+                              'assets/google_logo.png',
+                              width: 24,
+                              height: 24,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Text(

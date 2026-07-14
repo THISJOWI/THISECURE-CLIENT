@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:thisjowi/core/environment_profile.dart';
 import 'package:thisjowi/core/environment_profile_manager.dart';
 import 'package:thisjowi/i18n/translations.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 
 class EnvironmentAddScreen extends StatefulWidget {
   const EnvironmentAddScreen({super.key});
@@ -82,6 +83,7 @@ class _EnvironmentAddScreenState extends State<EnvironmentAddScreen> {
     );
 
     await EnvironmentProfileManager().addProfile(profile);
+    TelemetryService.trackEvent('selfhosted_profile_added');
     if (mounted) Navigator.pop(context, true);
   }
 
@@ -96,6 +98,7 @@ class _EnvironmentAddScreenState extends State<EnvironmentAddScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded,
             color: Theme.of(context).colorScheme.onSurface),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context),
         ),
       ),

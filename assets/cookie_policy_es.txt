@@ -1,8 +1,8 @@
 POLÍTICA DE COOKIES DE THISECURE
 
-Última actualización: 4 de junio de 2026
+Última actualización: 14 de julio de 2026
 
-Esta Política de Cookies explica cómo THISECURE ("nosotros" o "nuestro") utiliza cookies y tecnologías similares cuando usted utiliza nuestra aplicación móvil y servicios relacionados (el "Servicio").
+Esta Política de Cookies explica cómo THISECURE ("nosotros" o "nuestro") utiliza cookies y tecnologías similares cuando usted utiliza nuestra aplicación móvil, servicios web y servicios relacionados (el "Servicio").
 
 1. QUÉ SON LAS COOKIES
 
@@ -22,6 +22,7 @@ auth_token                | Gestión de sesión de autenticación          | 24 
 refresh_token             | Renovación de token sin reiniciar sesión    | 7 días
 language_preference       | Recordar el idioma seleccionado             | 90 días
 theme_preference          | Recordar el tema de interfaz (claro/oscuro) | 90 días
+oauth_state               | Parámetro anti-CSRF de OAuth2               | 10 minutos
 
 2.2. Cookies de Preferencia (Cookies Funcionales)
 
@@ -32,25 +33,42 @@ Nombre de Cookie          | Finalidad                                   | Duraci
 onboarding_completed     | Seguimiento de finalización de la guía      | Persistente
 autofill_prompt_shown    | Registrar si se mostró la ayuda de autocompletado | Persistente
 app_open_count           | Contador de aperturas de la aplicación      | Sesión
+self_hosted_host         | Recordar configuración del servidor autogestionado | Persistente
+self_hosted_port         | Recordar puerto del servidor autogestionado | Persistente
+custom_api_url           | Recordar URL de API personalizada           | Persistente
+telemetry_opt_out        | Recordar preferencia de telemetría          | Persistente
 
-2.3. Cookies de Terceros
+2.3. Almacenamiento Local y Tecnologías Similares
 
-No utilizamos cookies de publicidad, análisis o seguimiento. El Servicio no integra servicios de análisis, redes publicitarias ni píxeles de seguimiento de redes sociales de terceros.
+El Servicio utiliza almacenamiento local y preferencias compartidas para:
+- Almacenar tokens de autenticación (flutter_secure_storage)
+- Alamacenar en caché las preferencias del usuario (tema, idioma, notificaciones)
+- Recordar la configuración del servidor para modo autogestionado
+- Almacenar el estado de finalización de la guía inicial
 
-Cuando elige iniciar sesión a través de proveedores OAuth2 (Google, GitHub, Microsoft), dichos proveedores pueden establecer sus propias cookies regidas por sus respectivas políticas de privacidad.
+2.4. Tecnologías de Terceros
 
-3. CÓMO GESTIONAR LAS COOKIES
+No utilizamos cookies de publicidad, análisis o seguimiento de terceros. Sin embargo:
+
+- **Aptabase**: Cuando la telemetría está habilitada, Aptabase utiliza almacenamiento local para rastrear datos de uso anónimos (vistas de pantalla, uso de funcionalidades). No se recopilan identificadores personales. Puede desactivarlo en cualquier momento desde la configuración de la aplicación.
+- **Proveedores OAuth2** (Google, GitHub, Microsoft): Cuando elige iniciar sesión a través de estos proveedores, pueden establecer sus propias cookies regidas por sus respectivas políticas de privacidad.
+- **OpenStreetMap (Nominatim)**: El mapa de selección de país utiliza la API de Nominatim pero no establece ninguna cookie.
+
+3. INSTANCIAS AUTOGESTIONADAS (SELF-HOSTED)
+
+Si está utilizando una instancia autogestionada de THISECURE, las cookies y el almacenamiento local son gestionados por su instancia y navegador. La telemetría está deshabilitada por defecto en modo autogestionado.
+
+4. CÓMO GESTIONAR LAS COOKIES
 
 Dado que este Servicio es principalmente una aplicación móvil, la gestión de cookies depende de su plataforma:
-
 - iOS/macOS: La configuración de la aplicación puede permitirle restablecer identificadores. La gestión de cookies a nivel de sistema está disponible en los ajustes de Safari.
 - Android: La configuración de cookies puede gestionarse a través de los ajustes de su navegador o WebView.
 - Escritorio: La configuración de su navegador le permite ver, bloquear o eliminar cookies.
 
-4. CAMBIOS EN ESTA POLÍTICA
+5. CAMBIOS EN ESTA POLÍTICA
 
 Podemos actualizar esta Política de Cookies periódicamente. Los cambios se notificarán a través de la aplicación o en nuestro sitio web.
 
-5. CONTACTO
+6. CONTACTO
 
 Para preguntas sobre esta Política de Cookies, contáctenos en privacy@thisjowi.uk.

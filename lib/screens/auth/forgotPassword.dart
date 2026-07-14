@@ -96,6 +96,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         elevation: 0,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: textColor),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -150,7 +151,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 380),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Icon Container
                       Container(

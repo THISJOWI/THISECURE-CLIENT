@@ -214,32 +214,36 @@ class Navigation extends State<MyBottomNavigation>
         ? '${_profilePhotoUrl!.startsWith('http') ? '' : ApiConfig.baseUrl}$_profilePhotoUrl${_profilePhotoUrl!.contains('?') ? '&' : '?'}cb=$_avatarCacheBuster'
         : null;
 
-    return Container(
-      width: 28,
-      height: 28,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: bgColor,
-        border: Border.all(color: borderColor, width: 1.5),
-        image: hasPhoto
-            ? DecorationImage(
-                image: NetworkImage(imageUrl!),
-                fit: BoxFit.cover,
-              )
-            : null,
-      ),
-      child: hasPhoto
-          ? null
-          : Center(
-              child: Text(
-                _profileInitials,
-                style: TextStyle(
-                  color: initialsColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
+    return Semantics(
+      label: 'User profile',
+      button: true,
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: bgColor,
+          border: Border.all(color: borderColor, width: 1.5),
+          image: hasPhoto
+              ? DecorationImage(
+                  image: NetworkImage(imageUrl!),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: hasPhoto
+            ? null
+            : Center(
+                child: Text(
+                  _profileInitials,
+                  style: TextStyle(
+                    color: initialsColor,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 
@@ -330,16 +334,12 @@ class Navigation extends State<MyBottomNavigation>
                 HapticFeedback.lightImpact();
                 setState(() => _currentIndex = index);
               },
-              barHeight: 64,
               barBorderRadius: 28,
-              horizontalPadding: 20,
-              spacing: 8,
               glassSettings: LiquidGlassSettings(
                 thickness: Theme.of(context).brightness == Brightness.dark ? 30 : 55,
                 blur: Theme.of(context).brightness == Brightness.dark ? 90 : 90,
                 refractiveIndex: 1.45,
               ),
-              showIndicator: true,
             ),
           ),
         ),
@@ -392,10 +392,13 @@ class _DesktopLayout extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Row(
                     children: [
-                      Image.asset(
-                        'assets/empresa.png',
-                        height: 40,
-                        width: 40,
+                      Semantics(
+                        label: 'THiSECURE logo',
+                        child: Image.asset(
+                          'assets/empresa.png',
+                          height: 40,
+                          width: 40,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Text(

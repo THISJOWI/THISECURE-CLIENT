@@ -172,6 +172,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
+          tooltip: 'Back'.i18n,
           onPressed: widget.onBack ?? () => Navigator.of(context).pop(),
         ),
       ),
@@ -317,14 +318,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                       borderRadius: BorderRadius.circular(16),
                                       borderSide: BorderSide(
                                         color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
-                                        width: 1,
                                       ),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(16),
                                       borderSide: BorderSide(
                                         color: Colors.white.withValues(alpha: 0.1),
-                                        width: 1,
                                       ),
                                     ),
                                     contentPadding: const EdgeInsets.symmetric(vertical: 20),

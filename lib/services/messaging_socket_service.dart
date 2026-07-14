@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:thisjowi/core/api.dart';
+import 'package:thisjowi/core/environment_profile_manager.dart';
 import 'package:thisjowi/services/token_manager.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 
@@ -37,6 +38,7 @@ class MessagingSocketService {
 
   Future<void> connect() async {
     if (_isConnected) return;
+    if (EnvironmentProfileManager().isCloud) return;
     _shouldReconnect = true;
     _retryCount = 0;
     await _doConnect();

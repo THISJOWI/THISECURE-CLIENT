@@ -318,7 +318,6 @@ class _ChatScreenState extends State<ChatScreen> {
       senderId: currentId,
       content: text,
       timestamp: DateTime.now(),
-      isRead: false,
     );
 
     setState(() {
@@ -547,6 +546,7 @@ class _ChatScreenState extends State<ChatScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).colorScheme.primary),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context),
         ),
         title: Row(
@@ -636,6 +636,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         controller: _textController,
                         style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                         decoration: InputDecoration(
+                          labelText: 'Message'.i18n,
                           hintText: 'THISMessages',
                           hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 16),
                           border: InputBorder.none,
@@ -653,6 +654,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: _sendMessage,
                     icon: Icon(Icons.arrow_upward_rounded,
                         color: Theme.of(context).colorScheme.onSurface),
+                    tooltip: 'Send message'.i18n,
                     style: IconButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       shape: const CircleBorder(),

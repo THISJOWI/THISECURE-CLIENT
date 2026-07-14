@@ -141,7 +141,6 @@ class AutofillService {
         isSupported: false,
         isEnabled: false,
         message: 'Tu dispositivo no soporta autofill de contraseñas',
-        actionText: null,
       );
     }
 
@@ -179,7 +178,6 @@ class AutofillService {
       isSupported: false,
       isEnabled: false,
       message: 'Plataforma no soportada',
-      actionText: null,
     );
   }
 }

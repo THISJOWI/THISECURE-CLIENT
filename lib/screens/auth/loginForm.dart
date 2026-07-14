@@ -114,6 +114,7 @@ class _LoginFormState extends State<LoginForm> {
                 _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
+              tooltip: _obscurePassword ? 'Show password'.i18n : 'Hide password'.i18n,
               onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
             ),
           ),

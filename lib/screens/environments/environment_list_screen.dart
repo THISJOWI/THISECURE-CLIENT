@@ -22,6 +22,7 @@ class EnvironmentListScreen extends StatelessWidget {
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -256,6 +257,7 @@ class _ProfileTile extends StatelessWidget {
                   color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
                   size: 20,
                 ),
+                tooltip: 'Delete'.i18n,
                 onPressed: onDelete,
               ),
           ],

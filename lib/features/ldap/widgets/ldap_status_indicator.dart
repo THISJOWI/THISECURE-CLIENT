@@ -18,7 +18,7 @@ class LdapStatusIndicator extends StatelessWidget {
             color: isConnected ? Colors.green : Colors.red,
             boxShadow: [
               BoxShadow(
-                color: (isConnected ? Colors.green : Colors.red).withOpacity(0.5),
+                color: (isConnected ? Colors.green : Colors.red).withValues(alpha: 0.5),
                 blurRadius: 6,
                 spreadRadius: 1,
               ),

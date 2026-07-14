@@ -93,7 +93,6 @@ class ErrorSnackBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Colors.red.shade600,
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -155,7 +154,6 @@ class SuccessSnackBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Colors.green.shade600,
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -217,7 +215,6 @@ class InfoSnackBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(

@@ -141,7 +141,6 @@ class _SplashScreenState extends State<SplashScreen>
             child: child,
           );
         },
-        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
   }
@@ -179,9 +178,12 @@ class _SplashScreenState extends State<SplashScreen>
                     ],
                   ),
                   child: ClipOval(
-                    child: Image.asset(
-                      'assets/empresa.png',
-                      fit: BoxFit.cover,
+                    child: Semantics(
+                      label: 'THiSECURE',
+                      child: Image.asset(
+                        'assets/empresa.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

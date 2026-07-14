@@ -172,7 +172,6 @@ class ImportExportService {
       items: passwords,
       format: 'json',
       totalCount: passwords.length,
-      dataType: 'password',
     );
   }
 
@@ -397,7 +396,6 @@ class ImportExportService {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['csv', 'json', 'md'],
-      allowMultiple: false,
     );
 
     if (result == null || result.files.isEmpty) return null;

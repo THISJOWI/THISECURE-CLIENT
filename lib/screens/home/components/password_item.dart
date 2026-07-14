@@ -1,8 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
-import 'package:thisjowi/components/liquid_glass.dart';
 import 'package:thisjowi/i18n/translations.dart';
 
 class PasswordItem extends StatelessWidget {
@@ -91,6 +89,7 @@ class PasswordItem extends StatelessWidget {
                                 .onSurface
                                 .withValues(alpha: 0.6),
                             size: 20),
+                        tooltip: 'Edit'.i18n,
                         onPressed: onEdit,
                         constraints:
                             const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -103,6 +102,7 @@ class PasswordItem extends StatelessWidget {
                                 .onSurface
                                 .withValues(alpha: 0.6),
                             size: 20),
+                        tooltip: 'Delete'.i18n,
                         onPressed: onDelete,
                         constraints:
                             const BoxConstraints(minWidth: 44, minHeight: 44),

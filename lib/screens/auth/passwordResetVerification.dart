@@ -167,6 +167,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -221,7 +222,6 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 380),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Icon Container
                         Container(
@@ -314,14 +314,12 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
                                             borderRadius: BorderRadius.circular(16),
                                             borderSide: BorderSide(
                                               color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.5),
-                                              width: 1,
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(16),
                                             borderSide: BorderSide(
                                               color: Colors.white.withValues(alpha: 0.1),
-                                              width: 1,
                                             ),
                                           ),
                                           contentPadding: const EdgeInsets.symmetric(vertical: 20),
@@ -407,6 +405,7 @@ class _PasswordResetVerificationScreenState extends State<PasswordResetVerificat
                                                 color: Colors.white.withValues(alpha: 0.5),
                                                 size: 20,
                                               ),
+                                              tooltip: _obscurePassword ? 'Show password'.i18n : 'Hide password'.i18n,
                                               onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                                           ),
                                           enabledBorder: OutlineInputBorder(

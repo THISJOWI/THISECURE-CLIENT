@@ -77,8 +77,6 @@ class OfflineAuthService {
       id: user.id,
       email: user.email,
       token: '',
-      tokenExpiry: null,
-      refreshToken: null,
     );
   }
 
@@ -107,8 +105,6 @@ class OfflineAuthService {
       accountType: accountType,
       hostingMode: hostingMode,
       lastLogin: now,
-      avatarUrl: null,
-      publicKey: null,
       isActive: 1,
       needsSync: 1,
       createdAt: now,
@@ -128,8 +124,6 @@ class OfflineAuthService {
       id: user.id,
       email: user.email,
       token: '',
-      tokenExpiry: null,
-      refreshToken: null,
     );
   }
 

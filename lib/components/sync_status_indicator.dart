@@ -51,7 +51,6 @@ class _SyncStatusIndicatorState extends State<SyncStatusIndicator> {
             color: _isOnline 
                 ? Colors.green.withValues(alpha: 0.3)
                 : Colors.orange.withValues(alpha: 0.3),
-            width: 1,
           ),
         ),
         child: Row(
@@ -120,7 +119,6 @@ class _SyncStatusBannerState extends State<SyncStatusBanner> {
         border: Border(
           bottom: BorderSide(
             color: Colors.orange.withValues(alpha: 0.5),
-            width: 1,
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:thisjowi/data/models/otp_entry.dart' as model;
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 import '../local/database.dart';
 import '../../services/otpApiService.dart';
@@ -190,9 +191,10 @@ class OtpRepository {
 
       // Sync with backend in BACKGROUND (non-blocking)
       if (_connectivityService.isOnline) {
-        _syncOtpInBackground(id, createdEntry);
+      _syncOtpInBackground(id, createdEntry);
       }
-      
+
+      TelemetryService.trackEvent('otp_created');
       return {
         'success': true,
         'data': createdEntry,
@@ -392,6 +394,7 @@ class OtpRepository {
         _syncOtpDeletionInBackground(id, serverId);
       }
 
+      TelemetryService.trackEvent('otp_deleted');
       return {
         'success': true,
         'message': 'OTP entry deleted'

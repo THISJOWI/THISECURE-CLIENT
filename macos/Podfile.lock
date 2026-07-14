@@ -1,18 +1,23 @@
 PODS:
   - desktop_webview_window (0.0.1):
     - FlutterMacOS
+  - device_info_plus (0.0.1):
+    - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - window_to_front (0.0.1):
     - FlutterMacOS
 
 DEPENDENCIES:
   - desktop_webview_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos`)
+  - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - window_to_front (from `Flutter/ephemeral/.symlinks/plugins/window_to_front/macos`)
 
 EXTERNAL SOURCES:
   desktop_webview_window:
     :path: Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos
+  device_info_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   window_to_front:
@@ -20,6 +25,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   desktop_webview_window: 7e37af677d6d19294cb433d9b1d878ef78dffa4d
+  device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   window_to_front: 9e76fd432e36700a197dac86a0011e49c89abe0a
 

@@ -105,48 +105,50 @@ class _ExpandableActionButtonState extends State<ExpandableActionButton>
           padding: EdgeInsets.only(bottom: bottomPadding),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: (Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF2A2A2A)).withValues(alpha: 0.85),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: onTap,
+            child: ExcludeSemantics(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: (Theme.of(context).brightness == Brightness.light ? Colors.white : const Color(0xFF2A2A2A)).withValues(alpha: 0.85),
                     borderRadius: BorderRadius.circular(24),
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
-                        size: 18),
-                    const SizedBox(width: 8),
-                    Text(
-                      label,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.3,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onTap,
+                      borderRadius: BorderRadius.circular(24),
+                      child: Container(
+                        constraints: const BoxConstraints(minHeight: 44, minWidth: 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(icon,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+                                size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              label,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-          ),
         ),
       ),
-    ),
-  ),
-);
+    );
   }
 
   @override

@@ -60,18 +60,14 @@ class LoggerConfig {
   /// Configuración para desarrollo
   static const LoggerConfig development = LoggerConfig(
     minLevel: LogLevel.info,
-    useColors: true,
     includeTimestamp: false,
     includeLoggerName: false,
-    saveToFile: false,
   );
 
   /// Configuración para producción
   static const LoggerConfig production = LoggerConfig(
     minLevel: LogLevel.warning,
     useColors: false,
-    includeTimestamp: true,
-    includeLoggerName: true,
     saveToFile: true,
   );
 
@@ -81,7 +77,6 @@ class LoggerConfig {
     useColors: false,
     includeTimestamp: false,
     includeLoggerName: false,
-    saveToFile: false,
   );
 }
 

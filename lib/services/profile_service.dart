@@ -89,7 +89,6 @@ final TokenManager _tokenManager = TokenManager();
       try {
         final response = await apiClient.get(
           '/v1/profiles/$userId',
-          requiresAuth: true,
         );
 
         validateResponse(response);
@@ -123,7 +122,6 @@ final TokenManager _tokenManager = TokenManager();
       final response = await apiClient.put(
         '/v1/profiles/${profile.userId}',
         body: profile.toJson(),
-        requiresAuth: true,
       );
 
       validateResponse(response);
@@ -175,7 +173,6 @@ final TokenManager _tokenManager = TokenManager();
       final response = await apiClient.patch(
         '/v1/profiles/$userId',
         body: bodyData,
-        requiresAuth: true,
       );
 
       validateResponse(response);
@@ -214,7 +211,6 @@ final TokenManager _tokenManager = TokenManager();
         file: imageFile,
         fieldName: 'avatar',
         contentType: MediaType('image', 'jpeg'),
-        requiresAuth: true,
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -271,7 +267,6 @@ final TokenManager _tokenManager = TokenManager();
     try {
       final response = await apiClient.delete(
         '/v1/profiles/$userId/avatar',
-        requiresAuth: true,
       );
 
       validateResponse(response);
@@ -305,7 +300,6 @@ final TokenManager _tokenManager = TokenManager();
       final response = await apiClient.put(
         '/v1/profiles/$userId/public-key',
         body: {'publicKey': publicKey},
-        requiresAuth: true,
       );
 
       validateResponse(response);
@@ -329,7 +323,6 @@ final TokenManager _tokenManager = TokenManager();
     try {
       final response = await apiClient.get(
         '/v1/profiles/$userId/public-key',
-        requiresAuth: true,
       );
 
       validateResponse(response);
@@ -389,7 +382,6 @@ final TokenManager _tokenManager = TokenManager();
     try {
       final response = await apiClient.get(
         '/v1/profiles/search?q=${Uri.encodeComponent(query)}&limit=$limit',
-        requiresAuth: true,
       );
 
       validateResponse(response);

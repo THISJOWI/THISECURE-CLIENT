@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:thisjowi/data/models/password_entry.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 import '../local/database.dart';
 import '../../services/passwordService.dart';
@@ -199,6 +200,7 @@ class PasswordsRepository {
         _syncPasswordInBackground(localId, dataToSave);
       }
 
+      TelemetryService.trackEvent('password_created');
       return {
         'success': true,
         'data': {'id': localId},
@@ -330,6 +332,7 @@ class PasswordsRepository {
         await _db.passwordsDao.hardDeletePassword(id);
       }
 
+      TelemetryService.trackEvent('password_deleted');
       return {
         'success': true,
         'message': 'Password deleted successfully'

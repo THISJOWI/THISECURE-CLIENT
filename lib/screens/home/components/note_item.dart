@@ -1,9 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:thisjowi/data/models/note_entry.dart';
-import 'package:thisjowi/components/liquid_glass.dart';
-import 'package:thisjowi/i18n/translations.dart';
 import 'package:thisjowi/utils/note_content_utils.dart';
+import 'package:thisjowi/i18n/translations.dart';
 
 class NoteItem extends StatelessWidget {
   final Note note;
@@ -87,6 +86,7 @@ class NoteItem extends StatelessWidget {
                                 .onSurface
                                 .withValues(alpha: 0.6),
                             size: 20),
+                        tooltip: 'Delete'.i18n,
                         onPressed: onDelete,
                         constraints:
                             const BoxConstraints(minWidth: 44, minHeight: 44),

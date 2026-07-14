@@ -234,7 +234,7 @@ class _DeploymentModeSelectorState extends State<DeploymentModeSelector>
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeOutCubic,
             transform: Matrix4.identity()
-              ..translate(0.0, isHovered ? -4.0 : 0.0, 0.0),
+              ..translate(0.0, isHovered ? -4.0 : 0.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: BackdropFilter(

@@ -316,7 +316,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   .primary
                                   .withValues(alpha: 0.4),
                               blurRadius: 40,
-                              spreadRadius: 0,
                             ),
                           ],
                         ),
@@ -351,9 +350,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 40),
 
                       // Environment mode toggle
-                      Center(
+                      const Center(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
+                          padding: EdgeInsets.only(bottom: 16),
                           child: EnvironmentModeChip(),
                         ),
                       ),
@@ -373,7 +372,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: isDark
                                     ? Colors.white.withValues(alpha: 0.1)
                                     : Colors.black.withValues(alpha: 0.08),
-                                width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
@@ -444,6 +442,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 20, horizontal: 20),
                                     suffixIcon: IconButton(
+                                      tooltip: _obscurePassword ? 'Show password'.i18n : 'Hide password'.i18n,
                                       icon: Icon(
                                         _obscurePassword
                                             ? Icons.visibility_outlined

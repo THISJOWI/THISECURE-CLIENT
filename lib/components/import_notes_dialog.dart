@@ -134,7 +134,6 @@ class _ImportNotesDialogState extends State<ImportNotesDialog> {
                 ),
                 ctx,
                 padding: const EdgeInsets.all(24),
-                borderRadius: 16,
               ),
             ),
           );
@@ -422,7 +421,6 @@ class _ImportNotesDialogState extends State<ImportNotesDialog> {
             ),
             context,
             padding: const EdgeInsets.all(24),
-            borderRadius: 16,
           ),
         ),
       ),

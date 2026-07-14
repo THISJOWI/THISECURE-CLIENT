@@ -92,7 +92,6 @@ class BiometricService {
 
       return await _localAuth.authenticate(
         localizedReason: localizedReason,
-        biometricOnly: false, // Allow PIN/pattern as fallback
         sensitiveTransaction: sensitiveTransaction,
         persistAcrossBackgrounding: stickyAuth,
       );

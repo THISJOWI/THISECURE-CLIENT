@@ -1,17 +1,20 @@
 THISECURE PRIVACY POLICY
 
-Last updated: June 4, 2026
+Last updated: July 14, 2026
 
-This Privacy Policy describes how THISECURE ("we", "us", or "our") collects, uses, stores, and protects your personal data when you use our mobile application and related services (the "Service").
+This Privacy Policy describes how THISECURE ("we", "us", or "our") collects, uses, stores, and protects your personal data when you use our mobile application, web services, and related services (the "Service").
 
 This Policy is drafted in compliance with Regulation (EU) 2016/679 (General Data Protection Regulation or "GDPR") and the Spanish Organic Law 3/2018 on Data Protection and Digital Rights Guarantee (LOPDGDD).
 
+If you are using a self-hosted instance of THISECURE, the data controller is the organization or individual operating that instance, not THISECURE. Please review their privacy policy for details on how they handle your data.
+
 1. DATA CONTROLLER
 
+For users of the cloud-hosted Service:
 ThisJowi
 Email: privacy@thisjowi.uk
 
-We are the data controller for the personal data we process in connection with the Service.
+For users of self-hosted instances, the data controller is the entity operating the instance.
 
 2. PERSONAL DATA WE COLLECT
 
@@ -48,6 +51,38 @@ When you use Google, GitHub, or Microsoft to sign in, we receive:
 - Profile picture URL
 - Provider-specific identifier
 
+2.4. Data collected via LDAP (Business accounts only):
+
+When your organization uses LDAP authentication, we may receive:
+- Email address
+- Full name
+- Profile photo (jpegPhoto)
+- Phone number
+- Country
+- Department or organizational unit
+- Directory attributes configured by your organization
+
+2.5. Telemetry and analytics data:
+
+When using the cloud-hosted Service with telemetry enabled, we collect anonymous usage data via Aptabase:
+- Screen views (page names only, no content)
+- App version and platform (iOS, Android, desktop)
+- Session timestamps
+- Authentication events: login, login failed, registration, registration failed, logout, social login (Google, GitHub, Microsoft)
+- Password management events: password created, password deleted
+- Note management events: note created, note deleted
+- OTP management events: OTP created, OTP deleted
+- Account events: account deleted, password changed, biometric toggled, data imported, data exported
+- Navigation and deployment events: environment switched, self-hosted profile added, search performed
+- Registration events: self-hosted account registered
+- No personal identifiers are associated with telemetry data
+
+Telemetry is disabled by default in self-hosted instances and can be opted out of at any time from the application settings.
+
+2.6. Location data:
+
+When you use the country selection map feature, your selected geographic coordinates are sent to OpenStreetMap (Nominatim API) for reverse geocoding. THISECURE does not store precise location coordinates — only the selected country name is stored in your profile.
+
 3. PURPOSES AND LEGAL BASES FOR PROCESSING
 
 Purpose                          | Legal Basis (GDPR)
@@ -59,6 +94,7 @@ Subscription processing         | Art. 6(1)(b) — contract performance
 Customer support                | Art. 6(1)(b) — contract performance
 Service improvement             | Art. 6(1)(f) — legitimate interest
 Legal compliance (tax, records) | Art. 6(1)(c) — legal obligation
+Anonymous telemetry             | Art. 6(1)(f) — legitimate interest
 
 We do not use your personal data for automated decision-making or profiling.
 
@@ -70,32 +106,39 @@ Messages exchanged between users are protected by end-to-end encryption using th
 
 4.2. Server-Side Encryption
 
-Password vault entries and notes are encrypted at rest on our servers using AES-256-GCM with 256-bit keys. The encryption keys are separate from authentication keys and are never shared with third parties.
+Password vault entries, notes, and OTP secrets are encrypted at rest on our servers using AES-256-GCM with 256-bit keys. LDAP bind passwords are encrypted with AES-256-GCM. The encryption keys are separate from authentication keys and are never shared with third parties.
 
 4.3. Data at Rest
 
 Your data is stored across multiple secure databases:
-- PostgreSQL databases for user accounts, profiles, passwords, notes, and OTP configurations
+- PostgreSQL databases for user accounts, profiles, subscription data, passwords, notes, OTP configurations, and organizations
 - Apache Cassandra for messages
-- Redis/KeyDB for temporary session data and verification codes
+- MongoDB for messaging service data (conversations, LDAP user cache)
+- Redis/KeyDB for temporary session data, OTP verification codes, and revoked tokens
+- Cloudflare R2 (S3-compatible) for avatar image storage (cloud-hosted only)
+- Local filesystem for avatar storage (self-hosted only)
 
 4.4. Storage Locations
 
-Our infrastructure is hosted in the European Union. Cloudflare R2 object storage (used for avatars) may process data in the United States under the EU-US Data Privacy Framework.
+Our cloud infrastructure is hosted in the European Union. Cloudflare R2 object storage (used for avatars) may process data in the United States under the EU-US Data Privacy Framework.
 
 5. DATA RETENTION
 
 Data Category                    | Retention Period
 ---------------------------------|------------------
-Account data                     | Until account deletion + 30 days
+Account data                     | Until account deletion (hard delete, no recovery)
 Password vault entries           | Until account deletion
 Notes                            | Until account deletion
 Messages                         | Until account deletion or user deletion
 OTP configurations               | Until account deletion
 Verification codes (Redis)       | 10-15 minutes (automatically deleted)
 Temporary session tokens         | 24 hours (JWT expiry)
+Revoked JWT tokens (Redis)       | Until token expiry
 Subscription/payment records     | 5 years (legal obligation under tax law)
-Log data                         | 90 days
+Log data (login attempts)        | 90 days
+Kafka event messages             | Configurable retention (default: 7 days)
+Telemetry data (Aptabase)        | 12 months
+Avatar images                    | Until account deletion or avatar replacement
 
 6. DATA SHARING AND THIRD PARTIES
 
@@ -104,75 +147,102 @@ We share your data only with essential service providers:
 Service Provider               | Purpose                  | Data Shared
 -------------------------------|--------------------------|-------------
 Cloudflare R2                  | Avatar image storage     | Avatar images
-Stripe                         | Subscription payments    | Payment data, customer ID
+Stripe                         | Subscription payments    | Payment data, customer ID, subscription ID
 Google (OAuth2)               | Social login             | Email, name, picture
 GitHub (OAuth2)               | Social login             | Email, name, avatar
 Microsoft (OAuth2)            | Social login             | Email, name, picture
-Docker Hub                    | Container registry       | No personal data
+OpenStreetMap (Nominatim)     | Country selection map    | Geographic coordinates (lat/lng) — not stored
+Aptabase                       | Anonymous telemetry      | App version, platform, screen names, event names — no PII
+SMTP provider                  | Email delivery           | Email address, OTP codes, verification links
+HashiCorp Vault               | Secrets management       | Database credentials (no personal data)
 
-We do not sell your personal data to third parties. We do not use third-party analytics, advertising, or tracking services.
+We do not sell your personal data to third parties. We do not use third-party advertising or tracking services.
 
-7. INTERNATIONAL DATA TRANSFERS
+7. DATA PROCESSING UNDER LDAP
+
+When your organization integrates THISECURE with Active Directory or LDAP:
+- Authentication is performed against your organization's LDAP server
+- Directory attributes (name, email, photo, phone, department) are synchronized to provide the Service
+- THISECURE processes this data on behalf of your organization as a data processor
+- Your organization remains the data controller for LDAP-sourced data
+- LDAP bind credentials are encrypted at rest (AES-256-GCM)
+
+8. SELF-HOSTED INSTANCES
+
+When you deploy THISECURE on your own infrastructure:
+- All data is stored on your own servers and infrastructure
+- THISECURE (ThisJowi) has no access to your data
+- Telemetry is disabled by default
+- You are responsible for compliance with applicable data protection laws
+- THISECURE acts as the software provider, not as a data processor
+- You must implement your own security measures, backups, and data retention policies
+
+9. INTERNATIONAL DATA TRANSFERS
 
 When data is transferred outside the European Economic Area (EEA), we ensure appropriate safeguards are in place:
 - EU-US Data Privacy Framework certification (where applicable)
 - Standard Contractual Clauses (SCCs) adopted by the European Commission
 - Adequacy decisions by the European Commission
 
-8. YOUR RIGHTS
+10. YOUR RIGHTS
 
 Under the GDPR, you have the following rights:
 
-8.1. Right of Access (Art. 15)
+10.1. Right of Access (Art. 15)
 You can request a copy of all personal data we hold about you.
 
-8.2. Right to Rectification (Art. 16)
+10.2. Right to Rectification (Art. 16)
 You can correct inaccurate or incomplete data through your profile settings.
 
-8.3. Right to Erasure ("Right to be Forgotten") (Art. 17)
-You can delete your account, which will remove your personal data from our systems.
+10.3. Right to Erasure ("Right to be Forgotten") (Art. 17)
+You can delete your account, which will permanently remove your personal data from our systems. Account deletion is irreversible — data cannot be recovered after deletion.
 
-8.4. Right to Restrict Processing (Art. 18)
+10.4. Right to Restrict Processing (Art. 18)
 You can request that we limit how we use your data.
 
-8.5. Right to Data Portability (Art. 20)
-You can request your data in a structured, commonly used, machine-readable format.
+10.5. Right to Data Portability (Art. 20)
+You can export your data through the application's import/export feature in a structured, commonly used, machine-readable format, or request a manual export.
 
-8.6. Right to Object (Art. 21)
-You can object to processing based on legitimate interest.
+10.6. Right to Object (Art. 21)
+You can object to processing based on legitimate interest, including telemetry collection.
 
-8.7. Right to Withdraw Consent
+10.7. Right to Withdraw Consent
 Where processing is based on consent, you may withdraw it at any time without affecting the lawfulness of processing before withdrawal.
 
 To exercise any of these rights, contact us at privacy@thisjowi.uk. We will respond within 30 days.
 
 If you are unsatisfied with our response, you have the right to lodge a complaint with the Spanish Data Protection Agency (AEPD) at www.aepd.es.
 
-9. DATA SECURITY
+11. DATA SECURITY
 
 We implement appropriate technical and organizational measures to protect your data, including:
 - End-to-end encryption (X25519 + HKDF + AES-256-GCM)
 - Server-side encryption at rest (AES-256-GCM)
-- BCrypt password hashing
+- BCrypt password hashing (cost factor 12)
 - JWT token authentication with HMAC-SHA256 signing
 - TLS/HTTPS for all data in transit
 - Rate limiting on authentication endpoints
-- Account lockout after failed login attempts
+- Account lockout after failed login attempts (progressive: 5min, 15min, 1hr)
 - Biometric authentication option (device-level)
+- Input validation and HTML escaping on user-provided content
+- File type and size validation on uploads
+- HMAC-signed inter-service communication via Kafka
+- Regular security scanning (CodeQL, Trivy, Gitleaks) in CI pipeline
+- HashiCorp Vault for dynamic database credentials (cloud-hosted)
 
-10. MINORS
+12. MINORS
 
 The Service is not intended for individuals under the age of 16. We do not knowingly collect personal data from minors. If you become aware that a minor has provided us with personal data, please contact us immediately.
 
-11. CHANGES TO THIS POLICY
+13. CHANGES TO THIS POLICY
 
 We may update this Privacy Policy from time to time. Material changes will be notified via the application or by email at least 30 days before they take effect.
 
-12. CONTACT
+14. CONTACT
 
 Data Protection Officer: privacy@thisjowi.uk
 Service: THISECURE
-Last updated: June 4, 2026
+Last updated: July 14, 2026
 
 Supervisory Authority:
 Agencia Española de Protección de Datos (AEPD)

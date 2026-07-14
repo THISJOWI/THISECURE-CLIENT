@@ -8,6 +8,7 @@ import 'package:thisjowi/data/models/auth_user.dart';
 import 'package:thisjowi/data/local/secure_storage_service.dart';
 import 'package:thisjowi/services/base_service.dart';
 import 'package:thisjowi/services/cryptoService.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/services/token_manager.dart';
 import 'package:thisjowi/services/oauth2_browser_service.dart';
 
@@ -85,11 +86,14 @@ class GithubAuthService extends BaseService {
       await _cryptoService.initKeys();
 
       logInfo('Login GitHub exitoso: ${authUser.id}');
+      TelemetryService.trackEvent('login_with_github');
       return authUser;
     } on AuthException {
+      TelemetryService.trackEvent('login_with_github_failed');
       rethrow;
     } catch (e, stackTrace) {
       logError('Error en login GitHub', e, stackTrace);
+      TelemetryService.trackEvent('login_with_github_failed');
       throw AuthException(
         message: 'Error al iniciar sesion con GitHub',
         code: 'GITHUB_LOGIN_ERROR',

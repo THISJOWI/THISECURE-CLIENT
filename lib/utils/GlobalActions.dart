@@ -41,6 +41,7 @@ class GlobalActions {
               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
               size: 20,
             ),
+            tooltip: 'Show password'.i18n,
             onPressed: onToggleObscure,
           ),
         );
@@ -53,6 +54,7 @@ class GlobalActions {
               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
               size: 20,
             ),
+            tooltip: 'Generate password'.i18n,
             onPressed: onGenerate,
           ),
         );
@@ -181,7 +183,6 @@ class GlobalActions {
                   ],
                 ),
                 context,
-                borderRadius: 16,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.3),
@@ -420,7 +421,6 @@ class GlobalActions {
                 ],
               ),
               context,
-              borderRadius: 16,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.3),

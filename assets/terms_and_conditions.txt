@@ -1,8 +1,8 @@
 THISECURE TERMS AND CONDITIONS OF USE
 
-Last updated: June 4, 2026
+Last updated: July 14, 2026
 
-Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of our mobile application and related services (the "Service"). By registering for and using THISECURE, you agree to be legally bound by these Terms.
+Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of our mobile application, web services, and related services (the "Service"). By registering for and using THISECURE, you agree to be legally bound by these Terms.
 
 1. ACCEPTANCE OF TERMS
 
@@ -15,18 +15,19 @@ Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of ou
 2. DESCRIPTION OF THE SERVICE
 
 2.1. THISECURE is a secure communication and information management platform that offers:
-
 - End-to-end encrypted messaging (E2EE)
-
 - Secure note management
-
-- Password manager
-
+- Password manager with encrypted vault
+- Two-factor authentication (TOTP/OTP)
 - Authentication via LDAP and traditional methods
-
 - Cross-platform synchronization
+- Self-hosted deployment option
 
-2.2. The Service is available for Android, iOS, macOS, Windows, Linux devices and compatible web browsers.
+2.2. The Service is available as:
+- Cloud-hosted: managed and operated by THISECURE
+- Self-hosted: deployed and operated by you on your own infrastructure
+
+2.3. The Service is available for Android, iOS, macOS, Windows, Linux devices and compatible web browsers.
 
 3. ELIGIBILITY REQUIREMENTS
 
@@ -39,21 +40,14 @@ Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of ou
 4. ACCOUNT REGISTRATION AND SECURITY
 
 4.1. To use THISECURE, you must create an account by providing:
-
 - A unique username
-
 - A valid email address
-
 - A secure password
-
-- Additional information depending on your account type (Personal or Business)
+- Additional information depending on your account type (Community or Business)
 
 4.2. You are solely responsible for:
-
 - Maintaining the confidentiality of your password
-
 - All activities that occur under your account
-
 - Notifying us immediately of any unauthorized use
 
 4.3. THISECURE will not be liable for any losses resulting from the unauthorized use of your account.
@@ -63,11 +57,8 @@ Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of ou
 5.1. THISECURE implements end-to-end encryption (E2EE) to protect your communications.
 
 5.2. We generate unique cryptographic keys for each user. You are responsible for:
-
 - Keeping your private keys secure
-
 - Not sharing your encryption keys with third parties
-
 - Understanding that losing your keys may result in permanent loss of access to encrypted data
 
 5.3. We cannot access, read, or decrypt your encrypted messages, notes, or passwords.
@@ -79,25 +70,15 @@ Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of ou
 6.1. You agree to use THISECURE only for lawful purposes and in accordance with these Terms.
 
 6.2. It is PROHIBITED to:
-
 - Use the Service for illegal, fraudulent, or malicious activities
-
 - Transmit content that violates the rights of third parties
-
 - Distribute malware, viruses, or malicious code
-
 - Attempt to gain unauthorized access to other users' systems, accounts, or data
-
 - Reverse engineer, decompile, or disassemble the application
-
 - Use unauthorized bots, scripts, or automated tools
-
 - Harass, threaten, or intimidate other users
-
 - Distribute spam or unsolicited content
-
 - Impersonate other people or organizations
-
 - Interfere with the normal operation of the Service
 
 6.3. We reserve the right to suspend or terminate accounts that violate these policies.
@@ -107,25 +88,21 @@ Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of ou
 7.1. Business accounts can be configured with LDAP authentication for integration with Active Directory.
 
 7.2. Organization administrators are responsible for:
-
 - The correct configuration of their LDAP servers
-
 - User management within their organization
-
 - Compliance with their own corporate security policies
 
 7.3. THISECURE is not responsible for problems arising from incorrect LDAP configurations.
+
+7.4. LDAP authentication is available in both cloud-hosted and self-hosted deployments. In self-hosted mode, LDAP configuration is managed entirely by the instance operator.
 
 8. PASSWORD MANAGER
 
 8.1. The THISECURE password manager stores your credentials in encrypted form.
 
 8.2. You acknowledge that:
-
 - You are responsible for remembering your master password
-
 - Losing your master password may result in permanent loss of access to stored passwords
-
 - THISECURE cannot recover forgotten passwords due to end-to-end encryption
 
 8.3. We recommend maintaining backups of critical information.
@@ -138,4 +115,146 @@ Welcome to THISECURE. These Terms and Conditions ("Terms") govern your use of ou
 
 9.3. You do not acquire any ownership rights to the Service.
 
-9.4. The content you create (notes, messages) remains your property, but you grant us a license to process and store it as necessary.
+9.4. The content you create (notes, messages) remains your property, but you grant us a license to process and store it as necessary to provide the Service.
+
+10. SELF-HOSTED DEPLOYMENT
+
+10.1. THISECURE may be deployed on your own infrastructure under a self-hosted license.
+
+10.2. In self-hosted mode:
+- You are responsible for all aspects of operation, including infrastructure, security, backups, and compliance
+- THISECURE provides the software but has no access to your instance or data
+- Telemetry is disabled by default
+- You must comply with all applicable laws regarding the operation of communication services
+- Updates and security patches are provided as available; you are responsible for applying them
+
+10.3. THISECURE is not liable for any issues arising from self-hosted deployments, including data loss, security breaches, or service unavailability.
+
+11. LIMITATION OF LIABILITY
+
+11.1. THISECURE is provided "AS IS" and "AS AVAILABLE", without warranties of any kind.
+
+11.2. We do not guarantee that the Service:
+- Will be error-free or uninterrupted
+- Will be completely secure or immune to unauthorized access
+- Will meet all of your specific requirements
+
+11.3. To the maximum extent permitted by law, THISECURE shall not be liable for:
+- Loss of data, profits, or information
+- Indirect, incidental, or consequential damages
+- Service interruptions
+- Actions of third parties
+- Loss of encryption keys or passwords
+
+11.4. Our total liability shall not exceed the amount paid by you (if any) in the last 12 months.
+
+12. AVAILABILITY AND MAINTENANCE
+
+12.1. We strive to maintain the Service available 24/7, but we cannot guarantee it.
+
+12.2. We may perform scheduled or emergency maintenance that results in temporary interruptions.
+
+12.3. We shall not be liable for interruptions caused by:
+- Third-party connectivity issues
+- Hardware or infrastructure failures
+- Cyber attacks or force majeure events
+
+13. BACKUPS
+
+13.1. Although we perform regular backups, you are responsible for maintaining your own copies of critical information.
+
+13.2. We do not guarantee data recovery in case of loss.
+
+14. TERMINATION
+
+14.1. You may cancel your account at any time from the application settings.
+
+14.2. We reserve the right to suspend or cancel your account if:
+- You violate these Terms
+- You engage in fraudulent or illegal activities
+- Your account remains inactive for more than 24 months
+- It is necessary for security reasons
+
+14.3. Upon termination:
+- Your access to the Service will cease immediately
+- We will permanently delete your data after a grace period of 30 days
+- Certain obligations under these Terms will survive termination
+
+15. DATA EXPORT
+
+15.1. You may export your data at any time through the application's import/export feature.
+
+15.2. We will provide your data in a machine-readable format within 30 days of your request.
+
+16. GOVERNING LAW
+
+16.1. These Terms shall be governed and construed in accordance with the laws of Spain and the European Union.
+
+16.2. Any dispute shall be resolved in the competent courts of Madrid, Spain.
+
+16.3. We comply with the EU General Data Protection Regulation (GDPR).
+
+17. MINORS
+
+17.1. If you are between 16 and 18 years old, you must have the consent of a parent or legal guardian to use THISECURE.
+
+17.2. Parents/guardians are responsible for supervising the use of the Service by minors.
+
+18. SERVICE MODIFICATIONS
+
+18.1. We reserve the right to:
+- Modify, suspend, or discontinue any feature
+- Change prices or subscription plans (with prior notice)
+- Update technical requirements
+
+18.2. We will notify significant changes at least 30 days in advance.
+
+19. COMMUNICATIONS
+
+19.1. By using THISECURE, you agree to receive electronic communications related to:
+- Service updates
+- Changes to these Terms
+- Security notifications
+- Administrative information
+
+19.2. You may opt out of promotional communications at any time.
+
+20. INDEMNIFICATION
+
+20.1. You agree to indemnify and hold harmless THISECURE, its directors, employees, and affiliates from any claims arising from:
+- Your use of the Service
+- Violation of these Terms
+- Violation of third-party rights
+- Content you post or transmit
+
+21. SEVERABILITY
+
+21.1. If any provision of these Terms is held to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+
+22. WAIVER
+
+22.1. The failure to exercise any right under these Terms shall not constitute a waiver of such right.
+
+23. ENTIRE AGREEMENT
+
+23.1. These Terms, together with our Privacy Policy and Cookie Policy, constitute the entire agreement between you and THISECURE.
+
+23.2. These Terms supersede any prior agreements or understandings.
+
+24. CONTACT
+
+24.1. For questions about these Terms, you can contact us at:
+- Email: legal@thisjowi.uk
+- Website: https://thisjowi.uk/contact
+
+25. ACKNOWLEDGEMENT
+
+25.1. By clicking "I Accept" or by using THISECURE, you acknowledge that:
+- You have read and understood these Terms
+- You agree to be legally bound by these Terms
+- You have the legal capacity to accept these Terms
+
+---
+
+THISECURE - Secure and Private Communication
+© 2026 THISECURE. All rights reserved.

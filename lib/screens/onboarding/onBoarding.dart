@@ -13,7 +13,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen>
     with TickerProviderStateMixin {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   late AnimationController _fadeController;
@@ -298,7 +298,6 @@ Widget _buildIntroPage(OnboardingPage page) {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
               child: Center(
@@ -564,7 +563,7 @@ Widget _buildIntroPage(OnboardingPage page) {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide:
-                      BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1),
+                      BorderSide(color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
             ),

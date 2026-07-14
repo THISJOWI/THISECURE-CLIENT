@@ -261,6 +261,7 @@ class _SystemSettingsSectionState extends State<SystemSettingsSection> {
                 size: 18,
                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
               ),
+              tooltip: 'Notification settings'.i18n,
               onPressed: () => _service.openNotificationSettings(),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 44, minHeight: 44),

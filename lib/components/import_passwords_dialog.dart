@@ -128,7 +128,6 @@ class _ImportPasswordsDialogState extends State<ImportPasswordsDialog> {
                 ),
                 ctx,
                 padding: const EdgeInsets.all(24),
-                borderRadius: 16,
               ),
             ),
           );
@@ -412,7 +411,6 @@ class _ImportPasswordsDialogState extends State<ImportPasswordsDialog> {
             ),
             context,
             padding: const EdgeInsets.all(24),
-            borderRadius: 16,
           ),
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:thisjowi/core/exceptions/account_exceptions.dart';
 import 'package:thisjowi/data/models/account_user.dart';
 import 'package:thisjowi/services/base_service.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 
 class AccountService extends BaseService {
   AccountService() : super('AccountService');
@@ -62,6 +63,7 @@ class AccountService extends BaseService {
 
       if (response.statusCode == 200) {
         logInfo('Password changed successfully');
+        TelemetryService.trackEvent('password_changed');
         return;
       }
 
@@ -104,7 +106,6 @@ class AccountService extends BaseService {
     } catch (e, stackTrace) {
       logError('Change password failed', e, stackTrace);
       throw PasswordChangeException(
-        message: 'Error al cambiar la contrasena',
         details: e.toString(),
       );
     }
@@ -120,6 +121,7 @@ class AccountService extends BaseService {
 
       if (response.statusCode == 200 || response.statusCode == 204) {
         logInfo('Account deleted successfully');
+        TelemetryService.trackEvent('account_deleted');
         return;
       }
 
@@ -157,7 +159,6 @@ class AccountService extends BaseService {
     } catch (e, stackTrace) {
       logError('Unexpected error during account deletion', e, stackTrace);
       throw AccountDeletionException(
-        message: 'Error al eliminar la cuenta',
         details: e.toString(),
       );
     }

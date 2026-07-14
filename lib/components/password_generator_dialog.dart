@@ -104,6 +104,7 @@ class _PasswordGeneratorSheetState extends State<_PasswordGeneratorSheet> {
                         Icons.close,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
+                      tooltip: 'Close'.i18n,
                       onPressed: _cancel,
                     ),
                   ],
@@ -135,6 +136,7 @@ class _PasswordGeneratorSheetState extends State<_PasswordGeneratorSheet> {
                       letterSpacing: 1.5,
                     ),
                     decoration: InputDecoration(
+                      labelText: 'Generated password',
                       hintText: 'No characters selected'.i18n,
                       hintStyle: TextStyle(
                         color: Theme.of(context)
@@ -142,7 +144,6 @@ class _PasswordGeneratorSheetState extends State<_PasswordGeneratorSheet> {
                             .onSurface
                             .withValues(alpha: 0.4),
                         fontSize: 14,
-                        fontFamily: null,
                         letterSpacing: 0,
                       ),
                       border: InputBorder.none,

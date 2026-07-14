@@ -319,7 +319,6 @@ class _LogsScreenState extends State<LogsScreen> {
                               ),
                               items: [
                                 DropdownMenuItem(
-                                  value: null,
                                   child: Text('All Levels'.i18n),
                                 ),
                                 ...LogLevel.values.map((level) => DropdownMenuItem(

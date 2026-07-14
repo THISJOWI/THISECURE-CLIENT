@@ -267,7 +267,6 @@ class _CountryPickerSheetState extends State<CountryPickerSheet>
         border: Border(
           top: BorderSide(
             color: Colors.white.withValues(alpha: 0.1),
-            width: 1,
           ),
         ),
       ),
@@ -342,6 +341,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet>
                   fontSize: 16,
                 ),
                 decoration: InputDecoration(
+                  labelText: "search_country".i18n,
                   hintText: "search_country".i18n,
                   hintStyle: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
@@ -357,6 +357,7 @@ class _CountryPickerSheetState extends State<CountryPickerSheet>
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                             size: 20,
                           ),
+                          tooltip: 'Clear search'.i18n,
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _searchQuery = '');

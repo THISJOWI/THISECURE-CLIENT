@@ -271,6 +271,7 @@ class _SavePasswordDialogState extends State<SavePasswordDialog> {
                           : Icons.visibility_off_outlined,
                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
+                    tooltip: _obscurePassword ? 'Show password'.i18n : 'Hide password'.i18n,
                     onPressed: () {
                       setState(() {
                         _obscurePassword = !_obscurePassword;

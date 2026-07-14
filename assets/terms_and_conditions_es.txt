@@ -1,8 +1,8 @@
 TÉRMINOS Y CONDICIONES DE USO DE THISECURE
 
-Última actualización: 4 de junio de 2026
+Última actualización: 14 de julio de 2026
 
-Bienvenido a THISECURE. Estos Términos y Condiciones ("Términos") rigen el uso de nuestra aplicación móvil y servicios relacionados (el "Servicio"). Al registrarse y utilizar THISECURE, usted acepta estar legalmente vinculado por estos Términos.
+Bienvenido a THISECURE. Estos Términos y Condiciones ("Términos") rigen el uso de nuestra aplicación móvil, servicios web y servicios relacionados (el "Servicio"). Al registrarse y utilizar THISECURE, usted acepta estar legalmente vinculado por estos Términos.
 
 1. ACEPTACIÓN DE LOS TÉRMINOS
 
@@ -17,11 +17,17 @@ Bienvenido a THISECURE. Estos Términos y Condiciones ("Términos") rigen el uso
 2.1. THISECURE es una plataforma de comunicación segura y gestión de información que ofrece:
    - Mensajería cifrada de extremo a extremo (E2EE)
    - Gestión segura de notas
-   - Gestor de contraseñas
+   - Gestor de contraseñas con bóveda cifrada
+   - Autenticación de dos factores (TOTP/OTP)
    - Autenticación mediante LDAP y métodos tradicionales
    - Sincronización multiplataforma
+   - Opción de despliegue autogestionado (self-hosted)
 
-2.2. El Servicio está disponible para dispositivos Android, iOS, macOS, Windows, Linux y navegadores web compatibles.
+2.2. El Servicio está disponible como:
+   - Nube (cloud): gestionado y operado por THISECURE
+   - Autogestionado (self-hosted): desplegado y operado por usted en su propia infraestructura
+
+2.3. El Servicio está disponible para dispositivos Android, iOS, macOS, Windows, Linux y navegadores web compatibles.
 
 3. REQUISITOS DE ELEGIBILIDAD
 
@@ -37,7 +43,7 @@ Bienvenido a THISECURE. Estos Términos y Condiciones ("Términos") rigen el uso
    - Nombre de usuario único
    - Dirección de correo electrónico válida
    - Contraseña segura
-   - Información adicional según el tipo de cuenta (Personal o Empresarial)
+   - Información adicional según el tipo de cuenta (Comunidad o Empresarial)
 
 4.2. Usted es el único responsable de:
    - Mantener la confidencialidad de su contraseña
@@ -88,6 +94,8 @@ Bienvenido a THISECURE. Estos Términos y Condiciones ("Términos") rigen el uso
 
 7.3. THISECURE no es responsable de problemas derivados de configuraciones LDAP incorrectas.
 
+7.4. La autenticación LDAP está disponible tanto en despliegues en la nube como autogestionados. En modo autogestionado, la configuración LDAP es gestionada completamente por el operador de la instancia.
+
 8. GESTOR DE CONTRASEÑAS
 
 8.1. El gestor de contraseñas de THISECURE almacena sus credenciales de forma cifrada.
@@ -109,126 +117,139 @@ Bienvenido a THISECURE. Estos Términos y Condiciones ("Términos") rigen el uso
 
 9.4. El contenido que usted crea (notas, mensajes) sigue siendo de su propiedad, pero nos otorga una licencia para procesarlo y almacenarlo según sea necesario para proporcionar el Servicio.
 
-10. LIMITACIÓN DE RESPONSABILIDAD
+10. DESPLIEGUE AUTOGESTIONADO (SELF-HOSTED)
 
-10.1. THISECURE se proporciona "TAL CUAL" y "SEGÚN DISPONIBILIDAD", sin garantías de ningún tipo.
+10.1. THISECURE puede ser desplegado en su propia infraestructura bajo una licencia autogestionada.
 
-10.2. No garantizamos que el Servicio:
+10.2. En modo autogestionado:
+   - Usted es responsable de todos los aspectos de la operación, incluyendo infraestructura, seguridad, copias de seguridad y cumplimiento normativo
+   - THISECURE proporciona el software pero no tiene acceso a su instancia ni a sus datos
+   - La telemetría está deshabilitada por defecto
+   - Debe cumplir con todas las leyes aplicables relativas a la operación de servicios de comunicación
+   - Las actualizaciones y parches de seguridad se proporcionan según disponibilidad; usted es responsable de aplicarlos
+
+10.3. THISECURE no es responsable de problemas derivados de despliegues autogestionados, incluyendo pérdida de datos, brechas de seguridad o falta de disponibilidad del servicio.
+
+11. LIMITACIÓN DE RESPONSABILIDAD
+
+11.1. THISECURE se proporciona "TAL CUAL" y "SEGÚN DISPONIBILIDAD", sin garantías de ningún tipo.
+
+11.2. No garantizamos que el Servicio:
    - Esté libre de errores o interrupciones
    - Sea completamente seguro o inmune a accesos no autorizados
    - Cumpla con todos sus requisitos específicos
 
-10.3. En la máxima medida permitida por la ley, THISECURE no será responsable de:
+11.3. En la máxima medida permitida por la ley, THISECURE no será responsable de:
    - Pérdida de datos, beneficios o información
    - Daños indirectos, incidentales o consecuentes
    - Interrupciones del servicio
    - Acciones de terceros
    - Pérdida de claves de cifrado o contraseñas
 
-10.4. Nuestra responsabilidad total no excederá el monto pagado por usted (si aplica) en los últimos 12 meses.
+11.4. Nuestra responsabilidad total no excederá el monto pagado por usted (si aplica) en los últimos 12 meses.
 
-11. DISPONIBILIDAD Y MANTENIMIENTO
+12. DISPONIBILIDAD Y MANTENIMIENTO
 
-11.1. Nos esforzamos por mantener el Servicio disponible 24/7, pero no podemos garantizarlo.
+12.1. Nos esforzamos por mantener el Servicio disponible 24/7, pero no podemos garantizarlo.
 
-11.2. Podemos realizar mantenimiento programado o de emergencia que resulte en interrupciones temporales.
+12.2. Podemos realizar mantenimiento programado o de emergencia que resulte en interrupciones temporales.
 
-11.3. No seremos responsables de interrupciones causadas por:
+12.3. No seremos responsables de interrupciones causadas por:
    - Problemas de conectividad de terceros
    - Fallas de hardware o infraestructura
    - Ataques cibernéticos o eventos de fuerza mayor
 
-12. COPIAS DE SEGURIDAD
+13. COPIAS DE SEGURIDAD
 
-12.1. Aunque realizamos copias de seguridad regulares, usted es responsable de mantener sus propias copias de información crítica.
+13.1. Aunque realizamos copias de seguridad regulares, usted es responsable de mantener sus propias copias de información crítica.
 
-12.2. No garantizamos la recuperación de datos en caso de pérdida.
+13.2. No garantizamos la recuperación de datos en caso de pérdida.
 
-13. TERMINACIÓN
+14. TERMINACIÓN
 
-13.1. Puede cancelar su cuenta en cualquier momento desde la configuración de la aplicación.
+14.1. Puede cancelar su cuenta en cualquier momento desde la configuración de la aplicación.
 
-13.2. Nos reservamos el derecho de suspender o cancelar su cuenta si:
+14.2. Nos reservamos el derecho de suspender o cancelar su cuenta si:
    - Viola estos Términos
    - Participa en actividades fraudulentas o ilegales
    - Su cuenta permanece inactiva por más de 24 meses
    - Es necesario por razones de seguridad
 
-13.3. Tras la terminación:
+14.3. Tras la terminación:
    - Su acceso al Servicio cesará inmediatamente
-   - Podemos eliminar sus datos después de un período de gracia de 30 días
+   - Eliminaremos permanentemente sus datos después de un período de gracia de 30 días
    - Ciertas obligaciones de estos Términos seguirán vigentes
 
-14. EXPORTACIÓN DE DATOS
+15. EXPORTACIÓN DE DATOS
 
-14.1. Puede solicitar una exportación de sus datos en cualquier momento.
+15.1. Puede exportar sus datos en cualquier momento a través de la función de importación/exportación de la aplicación.
 
-14.2. Proporcionaremos sus datos en formato legible por máquina dentro de los 30 días posteriores a la solicitud.
+15.2. Proporcionaremos sus datos en formato legible por máquina dentro de los 30 días posteriores a la solicitud.
 
-15. LEGISLACIÓN APLICABLE
+16. LEGISLACIÓN APLICABLE
 
-15.1. Estos Términos se regirán e interpretarán de acuerdo con las leyes de España y la Unión Europea.
+16.1. Estos Términos se regirán e interpretarán de acuerdo con las leyes de España y la Unión Europea.
 
-15.2. Cualquier disputa se resolverá en los tribunales competentes de [Ciudad], España.
+16.2. Cualquier disputa se resolverá en los tribunales competentes de Madrid, España.
 
-15.3. Cumplimos con el Reglamento General de Protección de Datos (RGPD) de la UE.
+16.3. Cumplimos con el Reglamento General de Protección de Datos (RGPD) de la UE.
 
-16. MENORES DE EDAD
+17. MENORES DE EDAD
 
-16.1. Si tiene entre 16 y 18 años, debe tener el consentimiento de un padre o tutor legal para usar THISECURE.
+17.1. Si tiene entre 16 y 18 años, debe tener el consentimiento de un padre o tutor legal para usar THISECURE.
 
-16.2. Los padres/tutores son responsables de supervisar el uso del Servicio por parte de menores.
+17.2. Los padres/tutores son responsables de supervisar el uso del Servicio por parte de menores.
 
-17. MODIFICACIONES DEL SERVICIO
+18. MODIFICACIONES DEL SERVICIO
 
-17.1. Nos reservamos el derecho de:
+18.1. Nos reservamos el derecho de:
    - Modificar, suspender o descontinuar cualquier característica
    - Cambiar precios o planes de suscripción (con aviso previo)
    - Actualizar requisitos técnicos
 
-17.2. Notificaremos cambios significativos con al menos 30 días de anticipación.
+18.2. Notificaremos cambios significativos con al menos 30 días de anticipación.
 
-18. COMUNICACIONES
+19. COMUNICACIONES
 
-18.1. Al usar THISECURE, acepta recibir comunicaciones electrónicas relacionadas con:
+19.1. Al usar THISECURE, acepta recibir comunicaciones electrónicas relacionadas con:
    - Actualizaciones del servicio
    - Cambios en los Términos
    - Notificaciones de seguridad
    - Información administrativa
 
-18.2. Puede optar por no recibir comunicaciones promocionales en cualquier momento.
+19.2. Puede optar por no recibir comunicaciones promocionales en cualquier momento.
 
-19. INDEMNIZACIÓN
+20. INDEMNIZACIÓN
 
-19.1. Usted acepta indemnizar y eximir de responsabilidad a THISECURE, sus directores, empleados y afiliados de cualquier reclamación derivada de:
+20.1. Usted acepta indemnizar y eximir de responsabilidad a THISECURE, sus directores, empleados y afiliados de cualquier reclamación derivada de:
    - Su uso del Servicio
    - Violación de estos Términos
    - Violación de derechos de terceros
    - Contenido que usted publique o transmita
 
-20. DIVISIBILIDAD
+21. DIVISIBILIDAD
 
-20.1. Si alguna disposición de estos Términos se considera inválida o inaplicable, las disposiciones restantes permanecerán en pleno vigor y efecto.
+21.1. Si alguna disposición de estos Términos se considera inválida o inaplicable, las disposiciones restantes permanecerán en pleno vigor y efecto.
 
-21. RENUNCIA
+22. RENUNCIA
 
-21.1. La falta de ejercicio de cualquier derecho bajo estos Términos no constituye una renuncia a dicho derecho.
+22.1. La falta de ejercicio de cualquier derecho bajo estos Términos no constituye una renuncia a dicho derecho.
 
-22. ACUERDO COMPLETO
+23. ACUERDO COMPLETO
 
-22.1. Estos Términos, junto con nuestra Política de Privacidad, constituyen el acuerdo completo entre usted y THISECURE.
+23.1. Estos Términos, junto con nuestra Política de Privacidad y Política de Cookies, constituyen el acuerdo completo entre usted y THISECURE.
 
-22.2. Estos Términos reemplazan cualquier acuerdo o entendimiento previo.
+23.2. Estos Términos reemplazan cualquier acuerdo o entendimiento previo.
 
-23. CONTACTO
+24. CONTACTO
 
-23.1. Para preguntas sobre estos Términos, puede contactarnos en:
+24.1. Para preguntas sobre estos Términos, puede contactarnos en:
    - Email: legal@thisjowi.uk
    - Sitio web: https://thisjowi.uk/contact
 
-24. RECONOCIMIENTO
+25. RECONOCIMIENTO
 
-24.1. Al hacer clic en "Acepto" o al usar THISECURE, usted reconoce que:
+25.1. Al hacer clic en "Acepto" o al usar THISECURE, usted reconoce que:
    - Ha leído y comprendido estos Términos
    - Acepta estar legalmente vinculado por estos Términos
    - Tiene la capacidad legal para aceptar estos Términos

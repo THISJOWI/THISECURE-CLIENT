@@ -234,7 +234,6 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
         ],
       ),
       context,
-      borderRadius: 16,
       boxShadow: [
         BoxShadow(
           color: Colors.black.withValues(alpha: 0.3),
@@ -373,6 +372,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                     color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     size: 20,
                   ),
+                  tooltip: 'Generate password'.i18n,
                   onPressed: () async {
                     final password = await PasswordGeneratorDialog.show(context);
                     if (password != null && mounted) {
@@ -388,6 +388,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                     color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     size: 20,
                   ),
+                  tooltip: _showPassword ? 'Hide password'.i18n : 'Show password'.i18n,
                   onPressed: () {
                     setState(() => _showPassword = !_showPassword);
                   },

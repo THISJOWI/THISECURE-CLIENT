@@ -85,6 +85,7 @@ class _OtpQrScannerScreenState extends State<OtpQrScannerScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        tooltip: 'Back'.i18n,
                         onPressed: () => Navigator.pop(context),
                       ),
                       IconButton(

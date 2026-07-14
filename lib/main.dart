@@ -24,6 +24,7 @@ import 'package:thisjowi/data/repository/passwordsRepository.dart';
 import 'package:thisjowi/data/repository/notes_repository.dart';
 import 'package:thisjowi/data/repository/otp_repository.dart';
 import 'package:thisjowi/data/repository/profile_repository.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/services/token_manager.dart';
 import 'package:thisjowi/utils/app_logger.dart';
 
@@ -110,6 +111,8 @@ void main() async {
 
   ApiConfig.printConfig();
 
+  await TelemetryService.init();
+
   appLog.i('✅ App initialized successfully');
   runApp(const MainApp());
 }
@@ -130,24 +133,32 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-          ChangeNotifierProvider(create: (_) => ThemeProvider()),
-          ChangeNotifierProvider(create: (_) => EnvironmentProfileManager()),
-          Provider<PasswordsRepository>(create: (_) => PasswordsRepository()),
-          Provider<NotesRepository>(create: (_) => NotesRepository()),
-          Provider<OtpRepository>(create: (_) => OtpRepository()),
-          Provider<ProfileRepository>(create: (_) => ProfileRepository()),
-          ChangeNotifierProvider(create: (_) => OtpProvider()),
-          ChangeNotifierProvider(create: (_) => SyncProvider()),
-        ],
-      child: KeyboardEventFix(
-        child: Consumer<ThemeProvider>(
-          builder: (context, themeProvider, _) {
-            return I18n(
-              child: _AppCore(themeProvider: themeProvider),
-            );
-          },
+    return CallbackShortcuts(
+      bindings: {
+        SingleActivator(LogicalKeyboardKey.escape): () {},
+      },
+      child: Focus(
+        autofocus: true,
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => ThemeProvider()),
+            ChangeNotifierProvider(create: (_) => EnvironmentProfileManager()),
+            Provider<PasswordsRepository>(create: (_) => PasswordsRepository()),
+            Provider<NotesRepository>(create: (_) => NotesRepository()),
+            Provider<OtpRepository>(create: (_) => OtpRepository()),
+            Provider<ProfileRepository>(create: (_) => ProfileRepository()),
+            ChangeNotifierProvider(create: (_) => OtpProvider()),
+            ChangeNotifierProvider(create: (_) => SyncProvider()),
+          ],
+          child: KeyboardEventFix(
+            child: Consumer<ThemeProvider>(
+              builder: (context, themeProvider, _) {
+                return I18n(
+                  child: _AppCore(themeProvider: themeProvider),
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

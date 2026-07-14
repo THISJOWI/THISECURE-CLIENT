@@ -30,7 +30,7 @@ class HomeEmptyState extends StatelessWidget {
           Text(
             'Add your first password or note'.i18n,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55),
               fontSize: 14,
             ),
           ),

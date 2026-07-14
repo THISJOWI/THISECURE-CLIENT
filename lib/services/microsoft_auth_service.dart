@@ -7,6 +7,7 @@ import 'package:thisjowi/data/models/auth_user.dart';
 import 'package:thisjowi/data/local/secure_storage_service.dart';
 import 'package:thisjowi/services/base_service.dart';
 import 'package:thisjowi/services/cryptoService.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/services/token_manager.dart';
 import 'package:thisjowi/services/oauth2_browser_service.dart';
 import 'package:thisjowi/core/exceptions/auth_exceptions.dart';
@@ -100,11 +101,14 @@ class MicrosoftAuthService extends BaseService {
       await _cryptoService.initKeys();
 
       logInfo('Login Microsoft exitoso: ${authUser.id}');
+      TelemetryService.trackEvent('login_with_microsoft');
       return authUser;
     } on AuthException {
+      TelemetryService.trackEvent('login_with_microsoft_failed');
       rethrow;
     } catch (e, stackTrace) {
       logError('Error en login Microsoft', e, stackTrace);
+      TelemetryService.trackEvent('login_with_microsoft_failed');
       throw AuthException(
         message: 'Error al iniciar sesion con Microsoft',
         code: 'MICROSOFT_LOGIN_ERROR',

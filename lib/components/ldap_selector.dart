@@ -32,7 +32,6 @@ class _LdapSelectorState extends State<LdapSelector>
       icon: Icons.person_outline,
       title: 'Registro tradicional',
       subtitle: 'Crear cuenta con email y contraseña',
-      useLdap: false,
       gradient: [const Color(0xFF7A5C3A), const Color(0xFF9A7C5A)],
     ),
   ];
@@ -232,7 +231,7 @@ class _LdapSelectorState extends State<LdapSelector>
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeOutCubic,
             transform: Matrix4.identity()
-              ..translate(0.0, isHovered ? -4.0 : 0.0, 0.0),
+              ..translate(0.0, isHovered ? -4.0 : 0.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: BackdropFilter(

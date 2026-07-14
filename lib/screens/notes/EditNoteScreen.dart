@@ -226,7 +226,6 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     final isPhone = MediaQuery.of(context).size.shortestSide < 600;
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (didPop, result) {
         _saveOnBack();
       },
@@ -244,6 +243,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                       IconButton(
                         icon: Icon(Icons.arrow_back_ios,
                             color: onSurface, size: 18),
+                        tooltip: 'Back'.i18n,
                         onPressed: () => Navigator.pop(context),
                       ),
                       const Spacer(),
@@ -286,7 +286,8 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                               textInputAction: TextInputAction.next,
                               onSubmitted: (_) =>
                                   _quillFocusNode.requestFocus(),
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
+                                labelText: 'Title',
                                 hintText: 'Title',
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -307,7 +308,6 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                                 scrollController: _quillScrollController,
                                 config: const QuillEditorConfig(
                                   placeholder: 'Start typing...',
-                                  padding: EdgeInsets.zero,
                                 ),
                               ),
                             ),
@@ -351,21 +351,8 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
           showSearchButton: false,
           showQuote: false,
           showIndent: false,
-          showDirection: false,
-          showLineHeightButton: false,
-          showAlignmentButtons: false,
-          showSmallButton: false,
           showStrikeThrough: false,
           showInlineCode: false,
-          showUndo: true,
-          showRedo: true,
-          showBoldButton: true,
-          showItalicButton: true,
-          showUnderLineButton: true,
-          showHeaderStyle: true,
-          showListNumbers: true,
-          showListBullets: true,
-          showListCheck: true,
           toolbarSectionSpacing: 2,
           buttonOptions: QuillSimpleToolbarButtonOptions(
             base: QuillToolbarBaseButtonOptions(

@@ -116,6 +116,7 @@ class _AutofillPickerScreenState extends State<AutofillPickerScreen> {
         title: Text('${'Autofill for'.i18n} ${widget.request.appName}'),
         leading: IconButton(
           icon: const Icon(Icons.close),
+          tooltip: 'Close'.i18n,
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -147,6 +148,7 @@ class _AutofillPickerScreenState extends State<AutofillPickerScreen> {
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                           decoration: InputDecoration(
+                            labelText: 'Search passwords'.i18n,
                             hintText: 'Search passwords'.i18n,
                             hintStyle: TextStyle(
                                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),

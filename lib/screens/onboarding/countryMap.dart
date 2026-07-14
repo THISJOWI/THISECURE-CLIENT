@@ -53,6 +53,7 @@ class _CountryMapScreenState extends State<CountryMapScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
+          tooltip: 'Back'.i18n,
           onPressed: () => Navigator.pop(context),
         ),
       ),

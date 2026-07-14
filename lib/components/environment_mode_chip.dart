@@ -313,7 +313,18 @@ class _EnvironmentModeDialogState extends State<_EnvironmentModeDialog> {
   Widget _buildModeOption(String label, IconData icon, bool isCloud) {
     final selected = _isCloud == isCloud;
     return GestureDetector(
-      onTap: () => setState(() => _isCloud = isCloud),
+      onTap: () {
+        if (isCloud == widget.manager.isCloud) {
+          Navigator.pop(context);
+          return;
+        }
+        if (isCloud) {
+          widget.manager.switchTo('cloud');
+          Navigator.pop(context);
+        } else {
+          setState(() => _isCloud = isCloud);
+        }
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),

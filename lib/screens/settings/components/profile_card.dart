@@ -24,7 +24,10 @@ class ProfileCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
         children: [
-          GestureDetector(
+          Semantics(
+            label: 'Profile photo',
+            button: true,
+            child: GestureDetector(
             onTap: onAvatarTap,
             child: Container(
               width: 56,
@@ -58,6 +61,7 @@ class ProfileCard extends StatelessWidget {
                     )
                   : null,
             ),
+          ),
           ),
           const SizedBox(width: 14),
           Expanded(

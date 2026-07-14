@@ -7,6 +7,7 @@ import 'package:thisjowi/data/models/auth_user.dart';
 import 'package:thisjowi/data/local/secure_storage_service.dart';
 import 'package:thisjowi/services/base_service.dart';
 import 'package:thisjowi/services/cryptoService.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/services/token_manager.dart';
 import 'package:thisjowi/services/oauth2_browser_service.dart';
 import 'package:thisjowi/core/exceptions/auth_exceptions.dart';
@@ -93,11 +94,14 @@ class GoogleAuthService extends BaseService {
       await _cryptoService.initKeys();
 
       logInfo('Login Google exitoso: ${authUser.id}');
+      TelemetryService.trackEvent('login_with_google');
       return authUser;
     } on AuthException {
+      TelemetryService.trackEvent('login_with_google_failed');
       rethrow;
     } catch (e, stackTrace) {
       logError('Error en login Google', e, stackTrace);
+      TelemetryService.trackEvent('login_with_google_failed');
       throw AuthException(
         message: 'Error al iniciar sesion con Google',
         code: 'GOOGLE_LOGIN_ERROR',

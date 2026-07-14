@@ -28,6 +28,7 @@ import 'package:thisjowi/components/import_passwords_dialog.dart';
 import 'package:thisjowi/components/export_notes_sheet.dart';
 import 'package:thisjowi/components/import_notes_dialog.dart';
 import 'package:thisjowi/screens/settings/components/profile_card.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 
 
 class SettingScreen extends StatefulWidget {
@@ -181,6 +182,7 @@ class _SettingScreenState extends State<SettingScreen> {
         if (mounted) {
           setState(() => _biometricEnabled = true);
           ErrorSnackBar.showSuccess(context, 'Biometric enabled'.i18n);
+          TelemetryService.trackEvent('biometric_toggled', data: {'enabled': true});
         }
       } else {
         if (mounted) {
@@ -192,6 +194,7 @@ class _SettingScreenState extends State<SettingScreen> {
       if (mounted) {
         setState(() => _biometricEnabled = false);
         ErrorSnackBar.showSuccess(context, 'Biometric disabled'.i18n);
+        TelemetryService.trackEvent('biometric_toggled', data: {'enabled': false});
       }
     }
   }
@@ -405,7 +408,6 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               context,
               padding: const EdgeInsets.all(24),
-              borderRadius: 16,
             ),
           ),
         ),
@@ -489,7 +491,6 @@ class _SettingScreenState extends State<SettingScreen> {
                               .colorScheme
                               .onSurface
                               .withValues(alpha: 0.1),
-                          width: 1,
                         ),
                       ),
                       child: TextField(
@@ -528,6 +529,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     .withValues(alpha: 0.7),
                                 size: 24,
                               ),
+                              tooltip: obscurePassword ? 'Show password'.i18n : 'Hide password'.i18n,
                               onPressed: () => setState(
                                   () => obscurePassword = !obscurePassword),
                             ),
@@ -607,7 +609,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 context,
                 padding: const EdgeInsets.all(24),
-                borderRadius: 16,
               ),
             ),
           ),
@@ -652,12 +653,14 @@ class _SettingScreenState extends State<SettingScreen> {
         backgroundColor: Colors.transparent,
         builder: (_) => ExportPasswordsSheet(passwords: passwords),
       );
+      TelemetryService.trackEvent('data_exported', data: {'type': 'passwords'});
     } else {
       ErrorSnackBar.show(context, result['message'] as String? ?? 'Failed to load passwords'.i18n);
     }
   }
 
   void _handleImportPasswords() {
+    TelemetryService.trackEvent('data_imported', data: {'type': 'passwords'});
     showDialog(
       context: context,
       builder: (_) => const ImportPasswordsDialog(),
@@ -680,12 +683,14 @@ class _SettingScreenState extends State<SettingScreen> {
         backgroundColor: Colors.transparent,
         builder: (_) => ExportNotesSheet(notes: notes),
       );
+      TelemetryService.trackEvent('data_exported', data: {'type': 'notes'});
     } else {
       ErrorSnackBar.show(context, result['message'] as String? ?? 'Failed to load notes'.i18n);
     }
   }
 
   void _handleImportNotes() {
+    TelemetryService.trackEvent('data_imported', data: {'type': 'notes'});
     showDialog(
       context: context,
       builder: (_) => const ImportNotesDialog(),
@@ -823,7 +828,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 context,
                 padding: const EdgeInsets.all(24),
-                borderRadius: 16,
               ),
             ),
           ),
@@ -844,8 +848,7 @@ class _SettingScreenState extends State<SettingScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
             color:
-                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-            width: 1),
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
       ),
       child: TextField(
         controller: controller,
@@ -1035,7 +1038,6 @@ class _SettingScreenState extends State<SettingScreen> {
                           .colorScheme
                           .onSurface
                           .withValues(alpha: 0.1),
-                      width: 1,
                     ),
                   ),
                   child: TextField(

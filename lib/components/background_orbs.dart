@@ -65,9 +65,11 @@ class BackgroundOrbs extends StatelessWidget {
         ),
         
         // Blur effect ensuring content is readable but background is ambient
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-          child: Container(color: Colors.transparent),
+        ExcludeSemantics(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+            child: Container(color: Colors.transparent),
+          ),
         ),
 
         // Main Content

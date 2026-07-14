@@ -7,9 +7,10 @@ class LiquidGlass {
     double blurSigma = 20,
     EdgeInsetsGeometry? padding,
     List<BoxShadow>? boxShadow,
+    bool excludeSemantics = true,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return ClipRRect(
+    Widget result = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
@@ -29,5 +30,9 @@ class LiquidGlass {
         ),
       ),
     );
+    if (excludeSemantics) {
+      result = ExcludeSemantics(child: result);
+    }
+    return result;
   }
 }

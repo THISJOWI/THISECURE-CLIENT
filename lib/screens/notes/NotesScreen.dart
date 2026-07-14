@@ -281,7 +281,6 @@ class _NotesScreenState extends State<NotesScreen> {
                         color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold),
                   ),
                   centerTitle: false,
-                  pinned: true,
                   expandedHeight: 80,
                   collapsedHeight: 44,
                   actions: const [
@@ -316,6 +315,7 @@ class _NotesScreenState extends State<NotesScreen> {
                               color: Theme.of(context).colorScheme.onSurface, fontSize: 17),
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
+                            labelText: 'Search'.i18n,
                             hintText: 'Search'.i18n,
                           hintStyle: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
@@ -498,6 +498,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       const Spacer(),
                       IconButton(
                         icon: Icon(Icons.edit_square, color: Theme.of(context).colorScheme.primary),
+                        tooltip: 'Add note'.i18n,
                         onPressed: _createNote,
                       ),
                     ],

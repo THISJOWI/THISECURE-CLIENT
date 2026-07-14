@@ -66,14 +66,12 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: cs.outlineVariant,
-            width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: cs.outlineVariant,
-            width: 1,
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -156,7 +154,6 @@ class AppTheme {
   static ThemeData getLightTheme() {
     final cs = ColorScheme.fromSeed(
       seedColor: seedColor,
-      brightness: Brightness.light,
     );
 
     return ThemeData(
@@ -196,14 +193,12 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: cs.outlineVariant,
-            width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: cs.outlineVariant,
-            width: 1,
           ),
         ),
         focusedBorder: OutlineInputBorder(

@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:thisjowi/components/search_debounce.dart';
 import 'package:thisjowi/services/autofillService.dart';
+import 'package:thisjowi/services/telemetry_service.dart';
 import 'package:thisjowi/screens/home/components/password_item.dart';
 import 'package:thisjowi/screens/home/components/note_item.dart';
 import 'package:thisjowi/screens/home/components/empty_state.dart';
@@ -98,7 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showAutofillPopup() {
     showDialog(
       context: context,
-      barrierDismissible: true,
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         child: LiquidGlass.wrap(
@@ -264,8 +264,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Load both in parallel - WAIT for sync to complete
     final results = await Future.wait([
-      _passwordsRepository.getAllPasswords(waitForSync: true),
-      _notesRepository.getAllNotes(waitForSync: true),
+      _passwordsRepository.getAllPasswords(),
+      _notesRepository.getAllNotes(),
     ]);
 
     if (!mounted) return;
@@ -534,6 +534,7 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                               icon: Icon(Icons.copy,
                                   color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                   size: 18),
+                              tooltip: 'Copy username'.i18n,
                               onPressed: () {
                                 Clipboard.setData(
                                     ClipboardData(text: entry.username));
@@ -582,6 +583,7 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                                     : Icons.visibility_off,
                                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                 size: 18),
+                            tooltip: showPassword ? 'Hide password'.i18n : 'Show password'.i18n,
                             onPressed: () =>
                                 setState(() => showPassword = !showPassword),
                             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -592,6 +594,7 @@ Future<bool> _showDeletePasswordConfirmation(PasswordEntry entry) async {
                             icon: Icon(Icons.copy,
                                 color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                 size: 18),
+                            tooltip: 'Copy password'.i18n,
                             onPressed: () {
                               Clipboard.setData(
                                   ClipboardData(text: entry.password));
@@ -691,6 +694,7 @@ SafeArea(
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface, fontSize: 16),
                         decoration: InputDecoration(
+                          labelText: 'Search'.i18n,
                           hintText: 'Search'.i18n,
                         hintStyle: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
@@ -703,6 +707,7 @@ SafeArea(
                                 icon: Icon(Icons.close,
                                     color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                     size: 20),
+                                tooltip: 'Clear search'.i18n,
                                 onPressed: () {
                                   setState(() => _searchQuery = '');
                                   _loadData();
@@ -717,6 +722,9 @@ SafeArea(
                       ),
                       onChanged: (value) {
                         setState(() => _searchQuery = value);
+                        if (value.isNotEmpty) {
+                          TelemetryService.trackEvent('search_performed');
+                        }
                         _searchDebounce.debounce(() => _loadData());
                       },
                     ),
